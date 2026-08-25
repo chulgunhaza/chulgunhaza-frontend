@@ -318,9 +318,12 @@ export function ChatPage() {
         ) : (
           <>
             <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: 10, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <b>{activeRoom.roomName}</b>{' '}
-                <span className={`pill ${connected ? 'good' : 'warn'}`}>{connected ? '실시간 연결됨' : '연결 중'}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <b>{activeRoom.roomName}</b>
+                <span
+                  className={`status-dot ${connected ? 'online' : 'offline'}`}
+                  title={connected ? '실시간 연결됨' : '연결 중'}
+                />
               </div>
               <button className="btn" onClick={() => setLeaveConfirmOpen(true)}>
                 나가기
