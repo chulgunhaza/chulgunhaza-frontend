@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getEmployee } from '../api/employee';
 import { registerAttendance } from '../api/attendance';
-import { useAnnualLeave } from '../api/annual';
+import { applyAnnualLeave } from '../api/annual';
 import { ANNUAL_TYPE_LABEL, type AnnualType } from '../types/annual';
 import type { Annual } from '../types/employee';
 import { toApiError } from '../api/client';
@@ -55,7 +55,7 @@ export function DashboardPage() {
     setAnnualStatus('sending');
     setAnnualError(null);
     try {
-      const res = await useAnnualLeave({ annualDate, annualType, annualReason });
+      const res = await applyAnnualLeave({ annualDate, annualType, annualReason });
       setAnnual((prev) => (prev ? { ...prev, remainingAnnualCount: res.remainingAnnualCount, useCount: res.useCount } : prev));
       setAnnualStatus('idle');
       setAnnualReason('');
