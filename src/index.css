@@ -218,6 +218,10 @@ input, select, textarea {
 }
 
 .rail-avatar:active {
+  transform: scale(0.94);
+}
+
+.rail-avatar:active {
   transform: scale(0.95);
 }
 
@@ -425,6 +429,53 @@ input, select, textarea {
 .pill.good { background: var(--good-soft); color: var(--good); }
 .pill.warn { background: var(--warn-soft); color: var(--warn); }
 .pill.danger { background: var(--danger-soft); color: var(--danger); }
+
+/* 연결 상태 같은 걸 매번 텍스트 배지로 보여주면 시끄러워서, 자주 바뀌는 상태는
+   점 하나로 — 연결되면 초록, 아니면 무채색 회색. */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+.status-dot.online {
+  background: var(--good);
+  box-shadow: 0 0 0 3px var(--good-soft);
+}
+
+.status-dot.offline {
+  background: #b4b8c0;
+  box-shadow: 0 0 0 3px var(--surface-2);
+}
+
+.unread-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--brand);
+  color: white;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 말풍선 옆의 "몇 명이 안 읽었는지" 카카오톡류 힌트 — 배지처럼 채우지 않고 작은 숫자만 */
+.unread-count-hint {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--warn);
+  line-height: 1;
+  padding-bottom: 2px;
+}
 
 table {
   width: 100%;
