@@ -218,6 +218,10 @@ input, select, textarea {
 }
 
 .rail-avatar:active {
+  transform: scale(0.94);
+}
+
+.rail-avatar:active {
   transform: scale(0.95);
 }
 
