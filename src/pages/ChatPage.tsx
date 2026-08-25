@@ -42,6 +42,10 @@ export function ChatPage() {
   const [employees, setEmployees] = useState<EmployeeListResponseDto[]>([]);
   const [selectedMemberIds, setSelectedMemberIds] = useState<number[]>([]);
 
+  // window.confirm()은 iframe 임베드나 일부 브라우저 정책에서 아예 뜨지 않는 경우가 있어서
+  // (실측: 나가기를 눌러도 확인창 자체가 안 뜸) 네이티브 다이얼로그 대신 앱 내 모달을 쓴다.
+  const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
+
   // ---------- 채팅방 목록 로드 ----------
   const loadRooms = useCallback(async (page: number, append: boolean) => {
     setRoomsLoading(true);
@@ -203,14 +207,15 @@ export function ChatPage() {
     }
   }
 
-  async function handleLeaveRoom() {
+  async function confirmLeaveRoom() {
     if (!activeRoom) return;
-    if (!window.confirm(`'${activeRoom.roomName}' 대화방을 나가시겠습니까?`)) return;
     try {
       await leaveChatRoom(activeRoom.roomId);
+      setLeaveConfirmOpen(false);
       setActiveRoom(null);
       await loadRooms(0, false);
     } catch (err) {
+      setLeaveConfirmOpen(false);
       setError(toApiError(err).message);
     }
   }
@@ -317,7 +322,7 @@ export function ChatPage() {
                 <b>{activeRoom.roomName}</b>{' '}
                 <span className={`pill ${connected ? 'good' : 'warn'}`}>{connected ? '실시간 연결됨' : '연결 중'}</span>
               </div>
-              <button className="btn" onClick={handleLeaveRoom}>
+              <button className="btn" onClick={() => setLeaveConfirmOpen(true)}>
                 나가기
               </button>
             </div>
@@ -375,6 +380,22 @@ export function ChatPage() {
         <p className="error-text" style={{ position: 'fixed', bottom: 16, right: 16 }}>
           {error}
         </p>
+      )}
+      {leaveConfirmOpen && activeRoom && (
+        <div className="modal-overlay" onClick={() => setLeaveConfirmOpen(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <p className="modal-title">채팅방 나가기</p>
+            <p className="modal-body">'{activeRoom.roomName}' 대화방을 나가시겠습니까?</p>
+            <div className="modal-actions">
+              <button className="btn" onClick={() => setLeaveConfirmOpen(false)}>
+                취소
+              </button>
+              <button className="btn btn-danger" onClick={confirmLeaveRoom}>
+                나가기
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
