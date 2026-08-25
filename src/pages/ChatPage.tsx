@@ -146,7 +146,6 @@ export function ChatPage() {
           message: data.message!,
           roomId: activeRoom?.roomId ?? 0,
           createdTime: new Date().toISOString(),
-          read: false,
         },
       ]);
     }
@@ -169,7 +168,7 @@ export function ChatPage() {
       scrollToBottomRef.current = true;
       setMessages((prev) => [
         ...prev,
-        { senderId: user.id, message: text, roomId: activeRoom.roomId, createdTime: new Date().toISOString(), read: false },
+        { senderId: user.id, message: text, roomId: activeRoom.roomId, createdTime: new Date().toISOString() },
       ]);
       setError(null);
     } catch (err) {
@@ -257,7 +256,12 @@ export function ChatPage() {
                   </span>
                 )}
               </div>
-              <div style={{ fontSize: 12, color: 'var(--ink-faint)' }}>{room.lastMessage ?? '대화를 시작해보세요'}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
+                <div style={{ fontSize: 12, color: 'var(--ink-faint)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {room.lastMessage ?? '대화를 시작해보세요'}
+                </div>
+                {room.unReadMessageCount > 0 && <span className="unread-badge">{room.unReadMessageCount > 99 ? '99+' : room.unReadMessageCount}</span>}
+              </div>
             </button>
           ))}
           {roomsLoading && <p style={{ fontSize: 12, color: 'var(--ink-faint)', textAlign: 'center' }}>불러오는 중...</p>}

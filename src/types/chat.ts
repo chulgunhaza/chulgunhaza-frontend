@@ -36,7 +36,9 @@ export interface ChatMessageListResponseDto {
   message: string;
   roomId: number; // 백엔드 필드명은 RoomId(대문자)지만 getter가 getRoomId()라 JSON은 roomId로 내려온다
   createdTime: string;
-  read: boolean; // isRead() 게터 → Jackson 기본 규약상 JSON 필드명은 "read"
+  // read(메시지당 읽음 여부)는 백엔드에서 제거됨 — 그룹 채팅에서는 "누가 읽었는지"가 사람마다
+  // 달라서 메시지 하나에 boolean 하나로 표현이 안 됐다. 읽음/안읽음은 이제
+  // ChatRoomListResponseDto.unReadMessageCount(사람별로 정확히 계산)로만 확인한다.
 }
 
 // WebSocketMessageHandler가 받는 클라이언트 프로토콜 (커스텀, STOMP 아님)

@@ -447,6 +447,22 @@ input, select, textarea {
   box-shadow: 0 0 0 3px var(--surface-2);
 }
 
+.unread-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--brand);
+  color: white;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
