@@ -1,9 +1,11 @@
 :root {
-  /* 네이버웍스 스타일: 그린 브랜드 컬러 + 화이트 아이콘 레일 + 라이트 그레이 배경 */
-  --brand: #06c755;
-  --brand-dark: #04a648;
-  --brand-soft: #e6f9ee;
-  --brand-ink: #04321a;
+  /* SK 브랜드 레드/오렌지 + 화이트 아이콘 레일 + 라이트 그레이 배경 */
+  --brand: #e60012;
+  --brand-2: #ff8300;
+  --brand-dark: #b8000e;
+  --brand-soft: #fde9e9;
+  --brand-ink: #430006;
+  --brand-gradient: linear-gradient(135deg, var(--brand-2), var(--brand));
 
   --bg: #f1f2f5;
   --surface: #ffffff;
@@ -15,12 +17,13 @@
   --ink-faint: #8a8f98;
   --border: #e5e7eb;
 
-  --good: #06c755;
-  --good-soft: #e6f9ee;
+  /* 시맨틱 컬러는 브랜드 레드와 헷갈리지 않게 별도 색상 사용 */
+  --good: #1e9e5a;
+  --good-soft: #e3f6ec;
   --warn: #b8710a;
   --warn-soft: #fbecd4;
-  --danger: #e0392f;
-  --danger-soft: #fce6e4;
+  --danger: #9c1c1c;
+  --danger-soft: #f6e1e1;
 
   --shadow-sm: 0 1px 2px rgba(20, 22, 25, 0.05);
   --shadow-md: 0 4px 16px rgba(20, 22, 25, 0.08);
@@ -95,7 +98,7 @@ input, select, textarea {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: var(--brand);
+  background: var(--brand-gradient);
   color: white;
   display: flex;
   align-items: center;
@@ -371,7 +374,7 @@ tbody tr:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, #f1f2f5 0%, #e7f9ee 100%);
+  background: linear-gradient(180deg, #f1f2f5 0%, #fdece7 100%);
 }
 
 .login-card {
@@ -387,7 +390,7 @@ tbody tr:hover {
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: var(--brand);
+  background: var(--brand-gradient);
   color: white;
   display: flex;
   align-items: center;
