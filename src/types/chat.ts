@@ -1,25 +1,32 @@
 import type { Position } from './employee';
 
 export interface ChatRoomCreateRequestDto {
-  senderId: number;
-  receiverId: number;
+  // 대화 상대 아이디 목록. 1명이면 1:1, 2명 이상이면 단체 채팅방.
+  // senderId는 서버가 인증 세션에서 가져오므로 클라이언트가 보내지 않는다.
+  memberIds: number[];
+}
+
+export interface ChatRoomMemberDto {
+  id: number;
+  employeeNo: number;
+  name: string;
+  position: Position;
+  department: string;
 }
 
 export interface ChatRoomListResponseDto {
   roomId: number;
-  employeeId: number;
-  employeeNo: number;
-  userName: string;
-  position: Position;
-  department: string;
+  group: boolean;
+  roomName: string; // 1:1이면 상대 이름, 그룹이면 "A, B 외 N명"
+  members: ChatRoomMemberDto[]; // 나를 제외한 참여자 전원
   lastMessage: string | null;
   unReadMessageCount: number;
   lastMessageTime: string | null;
 }
 
 export interface ChatMessageCreateRequestDto {
-  receiverId: number;
-  message: string; // 10~300자
+  // roomId만으로 서버가 방 참여자 전원에게 전달하므로 receiverId는 더 이상 보내지 않는다.
+  message: string; // 1~300자
   roomId: number;
   createTime: string; // yyyy-MM-dd'T'HH:mm:ss
 }
