@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 한글 웹폰트: index.css의 --font가 "Pretendard"를 참조하고 있었지만 실제로 로드된 적이
+         없어서(설치된 사람만 적용) 지금까지 전부 시스템 기본 폰트로 대체 렌더링되고 있었다. -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css"
+    />
     <title>SKCT Study</title>
   </head>
   <body>

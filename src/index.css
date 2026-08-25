@@ -27,9 +27,14 @@
 
   --shadow-sm: 0 1px 2px rgba(20, 22, 25, 0.05);
   --shadow-md: 0 4px 16px rgba(20, 22, 25, 0.08);
+  --shadow-lg: 0 12px 32px rgba(20, 22, 25, 0.14);
 
-  --font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --font-mono: ui-monospace, "SF Mono", Consolas, monospace;
+
+  /* animations.dev 스타일 커스텀 이징 — 기본 CSS 이징은 UI에 쓰기엔 힘이 약하다 */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 * {
@@ -46,6 +51,7 @@ body {
   font-family: var(--font);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -61,6 +67,14 @@ button {
 input, select, textarea {
   font-family: inherit;
   font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -108,6 +122,11 @@ input, select, textarea {
   font-weight: 800;
   margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
+  transition: transform 200ms var(--ease-out);
+}
+
+.rail-mark:hover {
+  transform: scale(1.05);
 }
 
 .rail-nav {
@@ -118,6 +137,7 @@ input, select, textarea {
 }
 
 .rail-item {
+  position: relative;
   width: 56px;
   display: flex;
   flex-direction: column;
@@ -130,11 +150,13 @@ input, select, textarea {
   font-weight: 600;
   border: none;
   background: transparent;
+  transition: background 160ms var(--ease-out), color 160ms var(--ease-out), transform 160ms var(--ease-out);
 }
 
 .rail-item .rail-icon {
   font-size: 20px;
   line-height: 1;
+  transition: transform 200ms var(--ease-out);
 }
 
 .rail-item:hover {
@@ -142,9 +164,30 @@ input, select, textarea {
   color: var(--ink-soft);
 }
 
+.rail-item:hover .rail-icon {
+  transform: translateY(-1px) scale(1.06);
+}
+
+.rail-item:active {
+  transform: scale(0.96);
+}
+
 .rail-item.active {
   background: var(--brand-soft);
   color: var(--brand-dark);
+}
+
+/* 현재 위치를 왼쪽에 얇은 브랜드 컬러 바로 표시 (네이버웍스류 아이콘 레일 관용구) */
+.rail-item.active::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  border-radius: 0 3px 3px 0;
+  background: var(--brand);
 }
 
 .rail-bottom {
@@ -166,6 +209,16 @@ input, select, textarea {
   font-size: 13px;
   font-weight: 700;
   border: none;
+  transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+}
+
+.rail-avatar:hover {
+  transform: scale(1.06);
+  box-shadow: var(--shadow-sm);
+}
+
+.rail-avatar:active {
+  transform: scale(0.95);
 }
 
 .shell-body {
@@ -225,10 +278,40 @@ input, select, textarea {
   border-radius: 14px;
   padding: 22px;
   box-shadow: var(--shadow-sm);
+  animation: card-in 320ms var(--ease-out) both;
 }
 
 .card h2, .card h3 {
   margin-top: 0;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 팝오버(알림 패널, 채팅 상대 피커)는 트리거 지점에서 스케일-인 되어야 자연스럽다 —
+   페이지 카드의 슬라이드-업(card-in)과는 다른 모션이라 별도로 오버라이드한다. */
+.card.popover-panel {
+  transform-origin: var(--popover-origin, bottom left);
+  animation: popover-in 180ms var(--ease-out) both;
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .btn {
@@ -239,7 +322,8 @@ input, select, textarea {
   border-radius: 10px;
   font-size: 13.5px;
   font-weight: 600;
-  transition: border-color 0.12s, background 0.12s;
+  transition: border-color 140ms var(--ease-out), background 140ms var(--ease-out),
+    color 140ms var(--ease-out), transform 120ms var(--ease-out), box-shadow 140ms var(--ease-out);
 }
 
 .btn:hover {
@@ -248,16 +332,22 @@ input, select, textarea {
   color: var(--brand-dark);
 }
 
+.btn:active {
+  transform: scale(0.97);
+}
+
 .btn-primary {
   background: var(--brand);
   border-color: var(--brand);
   color: white;
+  box-shadow: 0 2px 8px rgba(230, 0, 18, 0.22);
 }
 
 .btn-primary:hover {
   background: var(--brand-dark);
   border-color: var(--brand-dark);
   color: white;
+  box-shadow: 0 4px 14px rgba(230, 0, 18, 0.28);
 }
 
 .btn-danger {
@@ -275,6 +365,8 @@ input, select, textarea {
   background: var(--surface);
   border-color: var(--border);
   color: var(--ink-faint);
+  box-shadow: none;
+  transform: none;
 }
 
 .field {
@@ -298,6 +390,13 @@ input, select, textarea {
   border-radius: 10px;
   background: var(--surface);
   color: var(--ink);
+  transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: #c7cad0;
 }
 
 .field input:focus,
@@ -350,6 +449,85 @@ tbody tr:hover {
   background: var(--surface-2);
 }
 
+/* ---------- 채팅: 방 목록 / 말풍선 ---------- */
+
+.room-item {
+  text-align: left;
+  display: block;
+  transition: background 140ms var(--ease-out), border-color 140ms var(--ease-out), transform 120ms var(--ease-out);
+}
+
+.room-item:active {
+  transform: scale(0.985);
+}
+
+.room-item.active {
+  background: var(--brand-soft);
+  border-color: var(--brand-soft);
+}
+
+.chat-bubble-row {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+  animation: bubble-in 220ms var(--ease-out) both;
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.chat-bubble {
+  padding: 9px 13px;
+  border-radius: 16px;
+  line-height: 1.45;
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
+  word-break: break-word;
+}
+
+/* 말풍선 꼬리 방향으로 한쪽 모서리만 살짝 각지게 — 실제 채팅 UI에서 쓰는 비대칭 라운딩 */
+.chat-bubble.theirs {
+  background: var(--surface-2);
+  color: var(--ink);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble.mine {
+  background: var(--brand-gradient);
+  color: white;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 10px rgba(230, 0, 18, 0.2);
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+
+.chat-input:hover {
+  border-color: #c7cad0;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-soft);
+}
+
 .notif-list {
   list-style: none;
   margin: 0;
@@ -365,6 +543,33 @@ tbody tr:hover {
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 13px;
+  transition: opacity 200ms var(--ease-out);
+}
+
+/* ---------- 게시판 링크 / 테이블 ---------- */
+
+.link-title {
+  color: var(--ink);
+  font-weight: 600;
+  background-image: linear-gradient(var(--brand), var(--brand));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size 180ms var(--ease-out), color 180ms var(--ease-out);
+  padding-bottom: 1px;
+}
+
+.link-title:hover {
+  color: var(--brand-dark);
+  background-size: 100% 1.5px;
+}
+
+tbody tr {
+  transition: background 120ms var(--ease-out);
+}
+
+.pill {
+  transition: transform 140ms var(--ease-out);
 }
 
 /* ---------- 로그인 화면 ---------- */
@@ -383,7 +588,19 @@ tbody tr:hover {
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 36px 32px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
+  animation: login-in 420ms var(--ease-out) both;
+}
+
+@keyframes login-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .login-mark {
@@ -399,4 +616,5 @@ tbody tr:hover {
   letter-spacing: -0.02em;
   font-weight: 800;
   margin-bottom: 16px;
+  box-shadow: 0 6px 16px rgba(230, 0, 18, 0.25);
 }
