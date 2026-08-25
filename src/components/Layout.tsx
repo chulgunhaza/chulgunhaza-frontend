@@ -20,14 +20,14 @@ export function Layout() {
 
   const title =
     PAGE_TITLE[location.pathname] ??
-    (location.pathname.startsWith('/board') ? '게시판' : '출근하자');
+    (location.pathname.startsWith('/board') ? '게시판' : 'SKCT Study');
 
   const initial = user?.name?.slice(0, 1) ?? '?';
 
   return (
     <div className="app-shell">
       <aside className="icon-rail">
-        <div className="rail-mark">출</div>
+        <div className="rail-mark" title="SKCT Study">SK</div>
         <nav className="rail-nav">
           {NAV_ITEMS.map((item) => (
             <NavLink

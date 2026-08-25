@@ -28,8 +28,8 @@ export function LoginPage() {
   return (
     <div className="login-shell">
       <form onSubmit={handleSubmit} className="login-card">
-        <div className="login-mark">출</div>
-        <h1 style={{ fontSize: 20, marginTop: 0, marginBottom: 4 }}>출근하자</h1>
+        <div className="login-mark">SK</div>
+        <h1 style={{ fontSize: 20, marginTop: 0, marginBottom: 4 }}>SKCT Study</h1>
         <p style={{ fontSize: 13, color: 'var(--ink-soft)', marginTop: 0, marginBottom: 24 }}>
           사내 그룹웨어 로그인
         </p>

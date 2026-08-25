@@ -100,7 +100,8 @@ input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 19px;
+  font-size: 14px;
+  letter-spacing: -0.02em;
   font-weight: 800;
   margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
@@ -391,7 +392,8 @@ tbody tr:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 16px;
+  letter-spacing: -0.02em;
   font-weight: 800;
   margin-bottom: 16px;
 }
