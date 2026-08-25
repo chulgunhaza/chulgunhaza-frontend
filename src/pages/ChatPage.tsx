@@ -32,6 +32,8 @@ export function ChatPage() {
   // 메시지를 보내거나(내가) 실시간으로 받았을 때(상대가) 맨 아래로 스크롤하라는 신호.
   // prepend(과거 메시지 로드)와는 별개 트리거라 ref로 구분해서 useLayoutEffect에서 처리한다.
   const scrollToBottomRef = useRef(false);
+  // handleSend 이중 호출(더블클릭, IME Enter 겹침 등) 방어용 락.
+  const isSendingRef = useRef(false);
 
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -152,17 +154,25 @@ export function ChatPage() {
       setError('채팅 메시지는 최대 300자까지 입력할 수 있습니다.');
       return;
     }
+    // 이중 클릭/이중 Enter 등 어떤 경로로든 handleSend가 겹쳐 호출되면 같은 메시지가
+    // 두 번 전송될 수 있어 방어적으로 막는다. draft를 즉시 비우는 것도 같은 이유.
+    if (isSendingRef.current) return;
+    isSendingRef.current = true;
+    const text = draft.trim();
+    setDraft('');
     try {
-      await sendChatMessage(activeRoom.roomId, draft.trim());
+      await sendChatMessage(activeRoom.roomId, text);
       scrollToBottomRef.current = true;
       setMessages((prev) => [
         ...prev,
-        { senderId: user.id, message: draft.trim(), roomId: activeRoom.roomId, createdTime: new Date().toISOString(), read: false },
+        { senderId: user.id, message: text, roomId: activeRoom.roomId, createdTime: new Date().toISOString(), read: false },
       ]);
-      setDraft('');
       setError(null);
     } catch (err) {
       setError(toApiError(err).message);
+      setDraft(text); // 실패했으면 입력값 복원
+    } finally {
+      isSendingRef.current = false;
     }
   }
 
@@ -345,7 +355,14 @@ export function ChatPage() {
                 style={{ flex: 1, padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 8 }}
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                onKeyDown={(e) => {
+                  // 한글 입력 중 조합 완성을 위해 누르는 Enter까지 전송으로 잡히면
+                  // (IME composing 상태의 keydown이 또 한 번 real Enter로 이어지면서)
+                  // 메시지가 2번 전송되는 문제가 있었다 — isComposing일 땐 무시.
+                  if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                    handleSend();
+                  }
+                }}
                 placeholder="메시지 입력"
               />
               <button className="btn btn-primary" onClick={handleSend}>
