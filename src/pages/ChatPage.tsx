@@ -146,6 +146,7 @@ export function ChatPage() {
           message: data.message!,
           roomId: activeRoom?.roomId ?? 0,
           createdTime: new Date().toISOString(),
+          unReadCount: 0, // 상대가 보낸 메시지엔 표시 안 하는 값이라 의미 없음
         },
       ]);
     }
@@ -168,7 +169,16 @@ export function ChatPage() {
       scrollToBottomRef.current = true;
       setMessages((prev) => [
         ...prev,
-        { senderId: user.id, message: text, roomId: activeRoom.roomId, createdTime: new Date().toISOString() },
+        {
+          senderId: user.id,
+          message: text,
+          roomId: activeRoom.roomId,
+          createdTime: new Date().toISOString(),
+          // 서버가 실제 안읽은 인원 수를 안 돌려줘서(전송 응답이 "전송 완료" 문자열뿐) 방금
+          // 보낸 시점엔 상대 전원이 아직 안 읽었을 거라고 낙관적으로 추정한다 — 실제 값은
+          // 다음에 이 방의 메시지 목록을 다시 불러올 때 정확한 값으로 갱신된다.
+          unReadCount: activeRoom.members.length,
+        },
       ]);
       setError(null);
     } catch (err) {
@@ -357,7 +367,14 @@ export function ChatPage() {
                   {activeRoom.group && m.senderId !== user?.id && (
                     <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 2 }}>{senderName(m.senderId)}</div>
                   )}
-                  <div className={`chat-bubble ${m.senderId === user?.id ? 'mine' : 'theirs'}`}>{m.message}</div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flexDirection: m.senderId === user?.id ? 'row' : 'row-reverse' }}>
+                    <div className={`chat-bubble ${m.senderId === user?.id ? 'mine' : 'theirs'}`}>{m.message}</div>
+                    {/* 내가 보낸 메시지에만 "아직 안 읽은 사람 수"를 표시한다 (카카오톡처럼) —
+                        상대 메시지엔 내가 몇 명인지 표시할 이유가 없다. */}
+                    {m.senderId === user?.id && m.unReadCount > 0 && (
+                      <span className="unread-count-hint">{m.unReadCount}</span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
