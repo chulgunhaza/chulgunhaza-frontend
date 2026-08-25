@@ -75,7 +75,9 @@ export function BoardListPage() {
                 page.contents.map((post) => (
                   <tr key={post.postNumber}>
                     <td>
-                      <Link to={`/board/${post.postNumber}`}>{post.title}</Link>
+                      <Link to={`/board/${post.postNumber}`} className="link-title">
+                        {post.title}
+                      </Link>
                     </td>
                     <td>{post.author ?? '알 수 없음'}</td>
                     <td>{post.count}</td>

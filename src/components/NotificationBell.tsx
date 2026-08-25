@@ -48,7 +48,7 @@ export function NotificationBell() {
       </button>
       {open && (
         <div
-          className="card"
+          className="card popover-panel"
           style={{
             position: 'absolute',
             bottom: 0,

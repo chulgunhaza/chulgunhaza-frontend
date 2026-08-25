@@ -42,6 +42,10 @@ export function ChatPage() {
   const [employees, setEmployees] = useState<EmployeeListResponseDto[]>([]);
   const [selectedMemberIds, setSelectedMemberIds] = useState<number[]>([]);
 
+  // window.confirm()은 iframe 임베드나 일부 브라우저 정책에서 아예 뜨지 않는 경우가 있어서
+  // (실측: 나가기를 눌러도 확인창 자체가 안 뜸) 네이티브 다이얼로그 대신 앱 내 모달을 쓴다.
+  const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
+
   // ---------- 채팅방 목록 로드 ----------
   const loadRooms = useCallback(async (page: number, append: boolean) => {
     setRoomsLoading(true);
@@ -203,14 +207,15 @@ export function ChatPage() {
     }
   }
 
-  async function handleLeaveRoom() {
+  async function confirmLeaveRoom() {
     if (!activeRoom) return;
-    if (!window.confirm(`'${activeRoom.roomName}' 대화방을 나가시겠습니까?`)) return;
     try {
       await leaveChatRoom(activeRoom.roomId);
+      setLeaveConfirmOpen(false);
       setActiveRoom(null);
       await loadRooms(0, false);
     } catch (err) {
+      setLeaveConfirmOpen(false);
       setError(toApiError(err).message);
     }
   }
@@ -241,11 +246,7 @@ export function ChatPage() {
           {rooms.map((room) => (
             <button
               key={room.roomId}
-              className="btn"
-              style={{
-                textAlign: 'left',
-                background: activeRoom?.roomId === room.roomId ? 'var(--brand-soft)' : undefined,
-              }}
+              className={`btn room-item${activeRoom?.roomId === room.roomId ? ' active' : ''}`}
               onClick={() => setActiveRoom(room)}
             >
               <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -263,7 +264,20 @@ export function ChatPage() {
         </div>
 
         {pickerOpen && (
-          <div className="card" style={{ position: 'absolute', zIndex: 10, width: 260, maxHeight: 360, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div
+            className="card popover-panel"
+            style={{
+              position: 'absolute',
+              zIndex: 10,
+              width: 260,
+              maxHeight: 360,
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              ['--popover-origin' as string]: 'top left',
+            }}
+          >
             <p style={{ fontSize: 12.5, marginTop: 0, marginBottom: 4 }}>
               대화 상대 선택 <span style={{ color: 'var(--ink-faint)' }}>(여러 명 선택 시 단체 채팅)</span>
             </p>
@@ -308,7 +322,7 @@ export function ChatPage() {
                 <b>{activeRoom.roomName}</b>{' '}
                 <span className={`pill ${connected ? 'good' : 'warn'}`}>{connected ? '실시간 연결됨' : '연결 중'}</span>
               </div>
-              <button className="btn" onClick={handleLeaveRoom}>
+              <button className="btn" onClick={() => setLeaveConfirmOpen(true)}>
                 나가기
               </button>
             </div>
@@ -330,29 +344,19 @@ export function ChatPage() {
               {messages.map((m, i) => (
                 <div
                   key={i}
-                  style={{
-                    alignSelf: m.senderId === user?.id ? 'flex-end' : 'flex-start',
-                    maxWidth: '70%',
-                  }}
+                  className="chat-bubble-row"
+                  style={{ alignSelf: m.senderId === user?.id ? 'flex-end' : 'flex-start' }}
                 >
                   {activeRoom.group && m.senderId !== user?.id && (
                     <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 2 }}>{senderName(m.senderId)}</div>
                   )}
-                  <div
-                    style={{
-                      background: m.senderId === user?.id ? 'var(--brand-soft)' : 'var(--surface-2)',
-                      padding: '8px 12px',
-                      borderRadius: 10,
-                    }}
-                  >
-                    {m.message}
-                  </div>
+                  <div className={`chat-bubble ${m.senderId === user?.id ? 'mine' : 'theirs'}`}>{m.message}</div>
                 </div>
               ))}
             </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
               <input
-                style={{ flex: 1, padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 8 }}
+                className="chat-input"
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => {
@@ -376,6 +380,22 @@ export function ChatPage() {
         <p className="error-text" style={{ position: 'fixed', bottom: 16, right: 16 }}>
           {error}
         </p>
+      )}
+      {leaveConfirmOpen && activeRoom && (
+        <div className="modal-overlay" onClick={() => setLeaveConfirmOpen(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <p className="modal-title">채팅방 나가기</p>
+            <p className="modal-body">'{activeRoom.roomName}' 대화방을 나가시겠습니까?</p>
+            <div className="modal-actions">
+              <button className="btn" onClick={() => setLeaveConfirmOpen(false)}>
+                취소
+              </button>
+              <button className="btn btn-danger" onClick={confirmLeaveRoom}>
+                나가기
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
