@@ -386,12 +386,13 @@ export function ChatPage() {
                     <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 2 }}>{senderName(m.senderId)}</div>
                   )}
                   <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flexDirection: m.senderId === user?.id ? 'row' : 'row-reverse' }}>
-                    <div className={`chat-bubble ${m.senderId === user?.id ? 'mine' : 'theirs'}`}>{m.message}</div>
                     {/* 내가 보낸 메시지에만 "아직 안 읽은 사람 수"를 표시한다 (카카오톡처럼) —
-                        상대 메시지엔 내가 몇 명인지 표시할 이유가 없다. */}
+                        상대 메시지엔 내가 몇 명인지 표시할 이유가 없다. 말풍선보다 먼저 렌더링해서
+                        말풍선 왼쪽(바깥쪽)에 붙게 한다. */}
                     {m.senderId === user?.id && m.unReadCount > 0 && (
                       <span className="unread-count-hint">{m.unReadCount}</span>
                     )}
+                    <div className={`chat-bubble ${m.senderId === user?.id ? 'mine' : 'theirs'}`}>{m.message}</div>
                   </div>
                 </div>
               ))}
