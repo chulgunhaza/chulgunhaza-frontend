@@ -33,23 +33,21 @@ export function BoardListPage() {
   }, [category, pageNum]);
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <h2 style={{ margin: 0 }}>게시판</h2>
+    <>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <div className="field" style={{ maxWidth: 240, marginBottom: 0 }}>
+          <label>카테고리</label>
+          <input
+            value={category}
+            onChange={(e) => {
+              setPageNum(0);
+              setCategory(e.target.value);
+            }}
+          />
+        </div>
         <Link to="/board/new" className="btn btn-primary">
-          글쓰기
+          ✏️ 글쓰기
         </Link>
-      </div>
-
-      <div className="field" style={{ maxWidth: 240 }}>
-        <label>카테고리</label>
-        <input
-          value={category}
-          onChange={(e) => {
-            setPageNum(0);
-            setCategory(e.target.value);
-          }}
-        />
       </div>
 
       {loading && <p style={{ color: 'var(--ink-faint)' }}>불러오는 중...</p>}
@@ -101,6 +99,6 @@ export function BoardListPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

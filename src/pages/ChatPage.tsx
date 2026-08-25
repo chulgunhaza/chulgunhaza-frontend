@@ -99,7 +99,7 @@ export function ChatPage() {
   }
 
   return (
-    <div style={{ display: 'flex', gap: 16, height: 'calc(100vh - 56px)' }}>
+    <div style={{ display: 'flex', gap: 16, height: 'calc(100vh - 152px)' }}>
       <div className="card" style={{ width: 260, display: 'flex', flexDirection: 'column', gap: 8, overflowY: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, fontSize: 14 }}>채팅방</h3>
@@ -114,7 +114,7 @@ export function ChatPage() {
             className="btn"
             style={{
               textAlign: 'left',
-              background: activeRoom?.roomId === room.roomId ? 'var(--accent-soft)' : undefined,
+              background: activeRoom?.roomId === room.roomId ? 'var(--brand-soft)' : undefined,
             }}
             onClick={() => setActiveRoom(room)}
           >
@@ -153,7 +153,7 @@ export function ChatPage() {
                   key={i}
                   style={{
                     alignSelf: m.senderId === user?.id ? 'flex-end' : 'flex-start',
-                    background: m.senderId === user?.id ? 'var(--accent-soft)' : 'var(--surface-2)',
+                    background: m.senderId === user?.id ? 'var(--brand-soft)' : 'var(--surface-2)',
                     padding: '8px 12px',
                     borderRadius: 10,
                     maxWidth: '70%',

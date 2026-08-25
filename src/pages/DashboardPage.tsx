@@ -66,9 +66,7 @@ export function DashboardPage() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      <h2 style={{ margin: 0 }}>대시보드</h2>
-
+    <>
       <div className="card">
         <h3 style={{ marginTop: 0 }}>출근 체크인</h3>
         <p style={{ fontSize: 13, color: 'var(--ink-soft)' }}>
@@ -117,7 +115,7 @@ export function DashboardPage() {
           </button>
         </form>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -127,7 +125,7 @@ function Stat({ label, value, highlight }: { label: string; value: string; highl
       <div style={{ fontSize: 11.5, color: 'var(--ink-faint)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
         {label}
       </div>
-      <div style={{ fontSize: 22, fontWeight: 700, color: highlight ? 'var(--accent)' : 'var(--ink)' }}>{value}</div>
+      <div style={{ fontSize: 22, fontWeight: 700, color: highlight ? 'var(--brand-dark)' : 'var(--ink)' }}>{value}</div>
     </div>
   );
 }
