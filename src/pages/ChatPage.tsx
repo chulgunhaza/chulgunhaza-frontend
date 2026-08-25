@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getChatRooms, getChatMessages, sendChatMessage, createChatRoom, leaveChatRoom } from '../api/chat';
 import { getEmployeeList } from '../api/employee';
 import { useChatSocket } from '../hooks/useChatSocket';
-import type { ChatRoomListResponseDto, ChatMessageListResponseDto } from '../types/chat';
+import type { ChatRoomListResponseDto, ChatMessageListResponseDto, ChatReadEvent } from '../types/chat';
 import type { EmployeeListResponseDto } from '../types/employee';
 import { toApiError } from '../api/client';
 
@@ -132,18 +132,34 @@ export function ChatPage() {
   }
 
   // ---------- 실시간 수신 ----------
-  // WebSocket으로 새 메시지가 오면 REST로 받아온 목록 맨 뒤에 이어붙인다.
+  // WebSocket으로 새 메시지가 오면 REST로 받아온 목록 맨 뒤에 이어붙이고, 누군가 방을
+  // 읽었다는 실시간 알림(read 이벤트)이 오면 해당 메시지들의 안읽은 인원 수를 그 자리에서
+  // 갱신한다 — "읽으면 실시간으로 사라져야지" 피드백으로 추가. REST로 다시 불러오기 전까진
+  // 안 바뀌던 걸 이제 상대가 읽는 순간 바로 반영한다.
   // (WebSocketMessageHandler가 push하는 payload 형태가 REST 응답과 100% 같다는 보장이 없어
   // 방어적으로 필드를 확인한 뒤 반영한다)
   const { connected } = useChatSocket(activeRoom?.roomId ?? null, (raw) => {
-    const data = raw as Partial<ChatMessageListResponseDto> & { message?: string };
+    const data = raw as Record<string, unknown>;
+
+    if (data && data.type === 'read' && Array.isArray(data.updates)) {
+      const updates = data.updates as ChatReadEvent['updates'];
+      setMessages((prev) =>
+        prev.map((m) => {
+          const update = updates.find((u) => u.messageId === m.messageId);
+          return update ? { ...m, unReadCount: update.unReadCount } : m;
+        }),
+      );
+      return;
+    }
+
     if (data && typeof data.message === 'string') {
       scrollToBottomRef.current = true;
       setMessages((prev) => [
         ...prev,
         {
-          senderId: data.senderId ?? -1,
-          message: data.message!,
+          messageId: 0, // 상대가 보낸 메시지는 실시간 push엔 id가 안 실려서 읽음 매칭은 다음 새로고침 때 반영됨
+          senderId: typeof data.senderId === 'number' ? data.senderId : -1,
+          message: data.message as string,
           roomId: activeRoom?.roomId ?? 0,
           createdTime: new Date().toISOString(),
           unReadCount: 0, // 상대가 보낸 메시지엔 표시 안 하는 값이라 의미 없음
@@ -170,13 +186,15 @@ export function ChatPage() {
       setMessages((prev) => [
         ...prev,
         {
+          messageId: 0, // 전송 응답이 "전송 완료" 문자열뿐이라 실제 id를 모름 — 다음 새로고침 때 채워짐
           senderId: user.id,
           message: text,
           roomId: activeRoom.roomId,
           createdTime: new Date().toISOString(),
           // 서버가 실제 안읽은 인원 수를 안 돌려줘서(전송 응답이 "전송 완료" 문자열뿐) 방금
           // 보낸 시점엔 상대 전원이 아직 안 읽었을 거라고 낙관적으로 추정한다 — 실제 값은
-          // 다음에 이 방의 메시지 목록을 다시 불러올 때 정확한 값으로 갱신된다.
+          // 다음에 이 방의 메시지 목록을 다시 불러올 때, 또는 상대가 실시간으로 읽으면
+          // read 이벤트로 정확한 값으로 갱신된다.
           unReadCount: activeRoom.members.length,
         },
       ]);

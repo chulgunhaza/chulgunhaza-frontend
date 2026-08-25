@@ -32,6 +32,7 @@ export interface ChatMessageCreateRequestDto {
 }
 
 export interface ChatMessageListResponseDto {
+  messageId: number; // 실시간 읽음 알림(ChatReadEvent)이 어떤 메시지를 가리키는지 매칭하는 데 쓴다
   senderId: number;
   message: string;
   roomId: number; // 백엔드 필드명은 RoomId(대문자)지만 getter가 getRoomId()라 JSON은 roomId로 내려온다
@@ -40,6 +41,15 @@ export interface ChatMessageListResponseDto {
   // 읽을 때마다 하나씩 줄고, 전원 읽으면 0. 예전엔 메시지당 boolean 하나(read)라 그룹
   // 채팅에서 "몇 명이 안 읽었는지"를 표현할 수 없었다.
   unReadCount: number;
+}
+
+// 누군가 방을 읽으면 서버가 실시간으로 쏴주는 이벤트 — "읽으면 실시간으로 사라져야지"
+// 피드백으로 추가. 새 채팅 메시지 payload(message 필드 있음)와는 type으로 구분한다.
+export interface ChatReadEvent {
+  type: 'read';
+  roomId: number;
+  readerId: number;
+  updates: { messageId: number; unReadCount: number }[];
 }
 
 // WebSocketMessageHandler가 받는 클라이언트 프로토콜 (커스텀, STOMP 아님)
