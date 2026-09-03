@@ -31,7 +31,7 @@ export function BoardDetailPage() {
   if (!post) return <p style={{ color: 'var(--ink-faint)' }}>불러오는 중...</p>;
 
   return (
-    <div className="card">
+    <div className="card" style={{ maxWidth: 760 }}>
       <span className="pill good">{post.category.categoryName}</span>
       <h2 style={{ marginBottom: 4 }}>{post.title}</h2>
       <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 16 }}>

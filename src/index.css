@@ -261,7 +261,7 @@ input, select, textarea {
 }
 
 .content-inner {
-  max-width: 900px;
+  max-width: 1280px;
   display: flex;
   flex-direction: column;
   gap: 20px;
