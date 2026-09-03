@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useChatUnreadCount } from '../hooks/useChatUnreadCount';
 import { NotificationBell } from './NotificationBell';
 import { ChatWidget } from './ChatWidget';
 
+// 채팅은 더 이상 별도 nav 항목이 아니다 — 아이콘 레일 하단의 채팅 위젯(알림
+// 벨 옆)이 진입점이고, 전체 화면이 필요하면 위젯 안의 "전체 화면" 버튼으로
+// /chat 라우트에 간다(라우트 자체는 그대로 있음).
 const NAV_ITEMS = [
   { to: '/', label: '대시보드', end: true },
   { to: '/board', label: '게시판', end: false },
-  { to: '/chat', label: '채팅', end: false },
 ];
 
 const PAGE_TITLE: Record<string, string> = {
@@ -28,10 +29,6 @@ export function Layout() {
     (location.pathname.startsWith('/board') ? '게시판' : '출근하자');
 
   const initial = user?.name?.slice(0, 1) ?? '?';
-
-  // 라우트가 바뀔 때마다(특히 채팅 페이지를 벗어날 때 = 방금 읽은 게 반영됐을
-  // 시점) 다시 불러와서 네브의 채팅 뱃지를 최신 상태로 맞춘다.
-  const { unreadCount: chatUnreadCount } = useChatUnreadCount(!!user, location.pathname);
 
   // 계정 메뉴 바깥을 클릭하면 닫는다 — 로그아웃처럼 되돌리기 번거로운 액션이
   // 걸려 있는 메뉴라 열어둔 채 잊어버리지 않게, 클릭 한 번이면 바로 닫히게 했다.
@@ -57,31 +54,8 @@ export function Layout() {
               to={item.to}
               end={item.end}
               className={({ isActive }) => `rail-item${isActive ? ' active' : ''}`}
-              style={{ position: 'relative' }}
             >
               <span>{item.label}</span>
-              {item.to === '/chat' && chatUnreadCount > 0 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: 4,
-                    right: 10,
-                    minWidth: 16,
-                    height: 16,
-                    borderRadius: 999,
-                    background: 'var(--danger)',
-                    color: 'white',
-                    fontSize: 10,
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '0 3px',
-                  }}
-                >
-                  {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
-                </span>
-              )}
             </NavLink>
           ))}
         </nav>

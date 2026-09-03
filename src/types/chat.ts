@@ -57,3 +57,15 @@ export interface WsSubscribeMessage {
   type: 'subscribe' | 'unsubscribe';
   chatRoomId: number;
 }
+
+// GET /v1/notifications/subscribe/chat (ChatAlarmService) 이 보내는 알림.
+// 이 방을 실시간 WS로 안 보고 있는(=session이 없는) 수신자에게만 오는 폴백
+// 채널이라, "지금 안 보고 있던 방에 새 메시지가 왔다"는 뜻으로 그대로 써도 된다.
+export interface ChatNotificationEvent {
+  roomId: number;
+  senderEmployeeNo: number;
+  senderName: string;
+  receiverEmployeeNo: number;
+  lastMessage: string;
+  unReadMessageCount: number;
+}

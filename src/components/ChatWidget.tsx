@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getChatRooms, getChatMessages, sendChatMessage } from '../api/chat';
 import { useChatSocket } from '../hooks/useChatSocket';
+import { useChatSse } from '../hooks/useChatSse';
 import { useChatUnreadCount } from '../hooks/useChatUnreadCount';
-import type { ChatRoomListResponseDto, ChatMessageListResponseDto, ChatReadEvent } from '../types/chat';
+import type { ChatRoomListResponseDto, ChatMessageListResponseDto, ChatReadEvent, ChatNotificationEvent } from '../types/chat';
 import { toApiError } from '../api/client';
 import { notifyChatUnreadChanged } from '../utils/chatEvents';
 
@@ -32,10 +33,12 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessageListResponseDto[]>([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<ChatNotificationEvent | null>(null);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const isSendingRef = useRef(false);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 패널 바깥을 클릭하면 닫는다 (계정 메뉴 등 이 앱의 다른 팝오버들과 같은 관용구).
   useEffect(() => {
@@ -89,6 +92,47 @@ export function ChatWidget() {
     setActiveRoom(room);
     setRooms((prev) => prev.map((r) => (r.roomId === room.roomId ? { ...r, unReadMessageCount: 0 } : r)));
     if (room.unReadMessageCount > 0) notifyChatUnreadChanged();
+  }
+
+  // 채팅 전용 SSE(useChatSse)는 "지금 실시간 WS로 안 보고 있는 방"에만 오는
+  // 폴백 알림이라, 오는 순간 바로 "지금 못 보고 있던 새 메시지"라는 뜻이다.
+  // 패널이 닫혀 있든, 다른 방을 보고 있든 항상 뜬다(로그인해 있는 내내
+  // 켜두는 채널이라 위젯이 접혀 있어도 동작 — useChatSocket과 달리 이건
+  // 굳이 열림 여부로 껐다 켰다 할 이유가 없다. 방 하나짜리 WS와 달리
+  // "내 모든 방"을 한 번에 커버하는 채널이라 상시 연결 비용이 낮다).
+  useChatSse(!!user, (notification) => {
+    setToast(notification);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 5000);
+    // 지금 이 방을 이미 열어서 보고 있었다면 애초에 SSE가 아니라 WS로 왔을
+    // 것이므로, 여기 온다는 것 자체가 "안 보고 있었다"는 뜻 — 뱃지도 최신
+    // 총합으로 다시 맞춘다.
+    notifyChatUnreadChanged();
+  });
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
+
+  // 알람을 눌러서 바로 그 방으로 들어간다 — 방 목록이 아직 안 불러와진
+  // 상태(패널이 닫혀 있던 채로 알람만 온 경우)일 수 있어 새로 불러온 뒤 찾는다.
+  // 방금 메시지가 온 방이니 최근순 목록의 첫 페이지 안에 항상 있다고 가정한다.
+  async function openRoomFromNotification(roomId: number) {
+    setToast(null);
+    setOpen(true);
+    setRoomsLoading(true);
+    try {
+      const res = await getChatRooms(0, WIDGET_ROOM_PAGE_SIZE);
+      setRooms(res.contents);
+      const target = res.contents.find((r) => r.roomId === roomId);
+      if (target) selectRoom(target);
+    } catch (err) {
+      setError(toApiError(err).message);
+    } finally {
+      setRoomsLoading(false);
+    }
   }
 
   const loadMessages = useCallback(async (roomId: number) => {
@@ -335,6 +379,27 @@ export function ChatWidget() {
             </>
           )}
         </div>
+      )}
+
+      {toast && (
+        <button className="card chat-toast" onClick={() => openRoomFromNotification(toast.roomId)}>
+          <span className="chat-toast-dot" />
+          <span style={{ minWidth: 0 }}>
+            <span style={{ display: 'block', fontWeight: 700, fontSize: 13 }}>{toast.senderName}</span>
+            <span
+              style={{
+                display: 'block',
+                fontSize: 12.5,
+                color: 'var(--ink-soft)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {toast.lastMessage}
+            </span>
+          </span>
+        </button>
       )}
 
       {error && (
