@@ -518,6 +518,33 @@ input, select, textarea {
   color: white;
   font-weight: 700;
 }
+/* 이 브라우저에서 신청한 날짜 — 선택 색(브랜드)과 헷갈리지 않게 점 하나로만
+   구분한다. 선택된 날이 동시에 신청한 날일 수도 있어 배경색이 아니라 오버레이. */
+.leave-calendar .rdp-day-applied .rdp-day_button {
+  position: relative;
+}
+.leave-calendar .rdp-day-applied .rdp-day_button::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--good);
+}
+.leave-calendar .rdp-selected.rdp-day-applied .rdp-day_button::after {
+  background: white;
+}
+.applied-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--good);
+  margin-right: 2px;
+}
 
 /* 연결 상태 같은 걸 매번 텍스트 배지로 보여주면 시끄러워서, 자주 바뀌는 상태는
    점 하나로 — 연결되면 초록, 아니면 무채색 회색. */

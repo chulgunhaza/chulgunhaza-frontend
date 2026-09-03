@@ -21,6 +21,31 @@ function toDateString(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
+// 신청한 날짜를 캘린더에 바로 표시하기 위한 로컬 저장 — 백엔드에 "내 연차
+// 사용 이력 목록" 조회 API가 없어서(총합만 내려줌) 서버에서 과거 이력을
+// 다시 불러올 방법이 없다. 그래서 "이 브라우저에서 신청한 날짜"만 localStorage에
+// 쌓아 새로고침해도 남게 해준다 — 다른 기기/브라우저에서 신청한 건 안 보인다는
+// 뜻이라, 계정별로 키를 나누고 캘린더 옆에 그 사실을 짧게 안내한다.
+function appliedDatesStorageKey(userId: number): string {
+  return `leave-applied-dates-${userId}`;
+}
+function loadAppliedDates(userId: number): string[] {
+  try {
+    const raw = localStorage.getItem(appliedDatesStorageKey(userId));
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+function saveAppliedDates(userId: number, dates: string[]) {
+  try {
+    localStorage.setItem(appliedDatesStorageKey(userId), JSON.stringify(dates));
+  } catch {
+    // 프라이빗 모드 등으로 저장이 막혀 있어도, 화면에 즉시 표시되는 것 자체엔
+    // 지장 없으니 조용히 무시한다.
+  }
+}
+
 export function LeavePage() {
   const { user } = useAuth();
   const [annual, setAnnual] = useState<Annual | null>(null);
@@ -31,6 +56,7 @@ export function LeavePage() {
   const [annualReason, setAnnualReason] = useState('');
   const [annualStatus, setAnnualStatus] = useState<'idle' | 'sending' | 'error'>('idle');
   const [annualError, setAnnualError] = useState<string | null>(null);
+  const [appliedDates, setAppliedDates] = useState<string[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -40,6 +66,7 @@ export function LeavePage() {
         setLoadError(null);
       })
       .catch((err) => setLoadError(toApiError(err).message));
+    setAppliedDates(loadAppliedDates(user.id));
   }, [user]);
 
   async function handleAnnualSubmit(e: FormEvent) {
@@ -51,6 +78,11 @@ export function LeavePage() {
       setAnnual((prev) => (prev ? { ...prev, remainingAnnualCount: res.remainingAnnualCount, useCount: res.useCount } : prev));
       setAnnualStatus('idle');
       setAnnualReason('');
+      if (user && !appliedDates.includes(annualDate)) {
+        const next = [...appliedDates, annualDate].sort();
+        setAppliedDates(next);
+        saveAppliedDates(user.id, next);
+      }
     } catch (err) {
       setAnnualStatus('error');
       setAnnualError(toApiError(err).message);
@@ -79,7 +111,14 @@ export function LeavePage() {
             selected={toDate(annualDate)}
             onSelect={(date) => date && setAnnualDate(toDateString(date))}
             defaultMonth={toDate(annualDate)}
+            modifiers={{ applied: appliedDates.map(toDate) }}
+            modifiersClassNames={{ applied: 'rdp-day-applied' }}
           />
+          {appliedDates.length > 0 && (
+            <p style={{ fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 4 }}>
+              <span className="applied-dot" /> 이 브라우저에서 신청한 날짜
+            </p>
+          )}
         </div>
 
         <form onSubmit={handleAnnualSubmit} style={{ flex: 1, minWidth: 220 }}>
