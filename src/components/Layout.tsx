@@ -9,11 +9,13 @@ import { ChatWidget } from './ChatWidget';
 // /chat 라우트에 간다(라우트 자체는 그대로 있음).
 const NAV_ITEMS = [
   { to: '/', label: '대시보드', end: true },
+  { to: '/leave', label: '연차', end: false },
   { to: '/board', label: '게시판', end: false },
 ];
 
 const PAGE_TITLE: Record<string, string> = {
   '/': '대시보드',
+  '/leave': '연차',
   '/board': '게시판',
   '/chat': '채팅',
 };

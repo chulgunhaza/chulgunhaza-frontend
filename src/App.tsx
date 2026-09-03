@@ -3,6 +3,7 @@ import { Layout } from './components/Layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { LeavePage } from './pages/LeavePage';
 import { BoardListPage } from './pages/BoardListPage';
 import { BoardDetailPage } from './pages/BoardDetailPage';
 import { BoardCreatePage } from './pages/BoardCreatePage';
@@ -20,6 +21,7 @@ export function App() {
         }
       >
         <Route path="/" element={<DashboardPage />} />
+        <Route path="/leave" element={<LeavePage />} />
         <Route path="/board" element={<BoardListPage />} />
         <Route path="/board/new" element={<BoardCreatePage />} />
         <Route path="/board/:postNumber" element={<BoardDetailPage />} />

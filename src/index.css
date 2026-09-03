@@ -423,6 +423,102 @@ input, select, textarea {
 .pill.warn { background: var(--warn-soft); color: var(--warn); }
 .pill.danger { background: var(--danger-soft); color: var(--danger); }
 
+/* 라벨+숫자 한 쌍(연차 요약, 통계 타일 등에서 공통으로 쓰는 모양) */
+.stat-label {
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.stat-value.highlight {
+  color: var(--brand-dark);
+}
+
+/* ---------- 대시보드(메인 페이지) ---------- */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.dashboard-grid .span-2 {
+  grid-column: 1 / -1;
+}
+@media (max-width: 720px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-tile-row {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+/* 대시보드의 채팅방/게시판 미리보기 목록 — 링크형 리스트 아이템. room-item(버튼)과
+   달리 <Link>/<a>로 쓰이는 곳도 있어서 별도 클래스로 뒀다. */
+.preview-list {
+  display: flex;
+  flex-direction: column;
+}
+.preview-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--border);
+  color: inherit;
+  transition: background 140ms var(--ease-out);
+}
+.preview-row:last-child {
+  border-bottom: none;
+}
+.preview-row:hover {
+  background: var(--surface-2);
+}
+.preview-row-title {
+  display: block;
+  font-weight: 700;
+  font-size: 13.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-row-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+/* ---------- 연차 페이지 캘린더(react-day-picker) ---------- */
+/* 라이브러리 기본 팔레트 대신 앱 토큰(코랄 브랜드)으로 덮어써서 이질감을 없앤다. */
+.leave-calendar .rdp-root {
+  --rdp-accent-color: var(--brand);
+  --rdp-accent-background-color: var(--brand-soft);
+  --rdp-today-color: var(--brand-dark);
+  font-family: var(--font);
+  margin: 0;
+}
+.leave-calendar .rdp-day_button {
+  border-radius: 10px;
+}
+.leave-calendar .rdp-selected .rdp-day_button {
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+}
+
 /* 연결 상태 같은 걸 매번 텍스트 배지로 보여주면 시끄러워서, 자주 바뀌는 상태는
    점 하나로 — 연결되면 초록, 아니면 무채색 회색. */
 .status-dot {
