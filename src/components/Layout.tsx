@@ -87,6 +87,9 @@ export function Layout() {
         </nav>
         <div className="rail-bottom">
           <NotificationBell />
+          {/* /chat 페이지에선 같은 기능이 이미 전체 화면으로 떠 있으니 위젯은 다른
+              화면에서만 렌더링한다(그래야 위젯의 백그라운드 소켓도 그 화면에서만 연결됨). */}
+          {!location.pathname.startsWith('/chat') && <ChatWidget />}
           {user && (
             <div ref={menuRef} style={{ position: 'relative' }}>
               <button
@@ -146,10 +149,6 @@ export function Layout() {
           </div>
         </main>
       </div>
-
-      {/* /chat 페이지에선 같은 기능이 이미 전체 화면으로 떠 있으니 위젯은 다른
-          화면에서만 렌더링한다(그래야 위젯의 백그라운드 소켓도 그 화면에서만 연결됨). */}
-      {!location.pathname.startsWith('/chat') && <ChatWidget />}
     </div>
   );
 }

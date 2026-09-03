@@ -572,23 +572,14 @@ tbody tr:hover {
   box-shadow: 0 0 0 3px var(--brand-soft);
 }
 
-/* 채팅 위젯 — /chat 전체 페이지와 별개로 어느 화면에서든 우측 하단에 떠서 빠르게
-   확인/답장할 수 있게 하는 진입점. 패널은 계정 메뉴/알림과 같은 .popover-panel
-   관용구(스케일+투명도, 트리거 쪽에서 확장되는 origin)를 그대로 따른다. */
-.chat-widget {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
-}
-
-.chat-widget-fab {
-  width: 52px;
-  height: 52px;
+/* 채팅 위젯 — /chat 전체 페이지와 별개로 어느 화면에서든 아이콘 레일 하단
+   (알림 벨 옆)에서 열어 빠르게 확인/답장할 수 있게 하는 진입점. 트리거는
+   레일 아바타와 같은 원형 아이콘 버튼, 패널은 계정 메뉴/알림과 같은
+   .popover-panel 관용구(스케일+투명도, 트리거 쪽에서 확장되는 origin)를
+   그대로 따른다. */
+.rail-chat-trigger {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: none;
   background: var(--brand-gradient);
@@ -597,35 +588,35 @@ tbody tr:hover {
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 8px 20px rgba(255, 91, 69, 0.35);
+  flex-shrink: 0;
   transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
 }
 
-.chat-widget-fab:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 24px rgba(255, 91, 69, 0.42);
+.rail-chat-trigger:hover {
+  transform: scale(1.06);
+  box-shadow: var(--shadow-sm);
 }
 
-.chat-widget-fab:active {
-  transform: scale(0.96);
+.rail-chat-trigger:active {
+  transform: scale(0.94);
 }
 
-.chat-widget-badge {
+.rail-chat-trigger-badge {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  min-width: 20px;
-  height: 20px;
+  top: -3px;
+  right: -3px;
+  min-width: 16px;
+  height: 16px;
   border-radius: 999px;
   background: var(--danger);
   color: white;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 4px;
-  border: 2px solid var(--bg);
+  padding: 0 3px;
+  border: 2px solid var(--rail-bg);
 }
 
 .chat-widget-panel {

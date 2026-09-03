@@ -12,11 +12,13 @@ const WIDGET_ROOM_PAGE_SIZE = 20;
 const WIDGET_MESSAGE_PAGE_SIZE = 30;
 
 // INFO : /chat 전체 페이지와는 별개로, 다른 화면(대시보드/게시판)을 보다가도 바로
-// 답장할 수 있게 만든 우측 하단 빠른 채팅 위젯. "지금 보고 있는 화면을 벗어나지
-// 않고 온 김에 확인하고 답장" 용도라, 방 목록 페이징이나 과거 메시지 무한 스크롤
-// 같은 깊은 탐색 기능은 전체 페이지(ChatPage) 몫으로 남겨두고 최근 방 20개 +
-// 최신 메시지 한 페이지만 가볍게 다룬다. /chat 페이지 자체에서는 Layout이 이 컴포넌트를
-// 아예 렌더링하지 않는다(같은 기능이 이미 전체 화면으로 떠 있는데 위젯까지 겹칠 이유가 없음).
+// 답장할 수 있게 만든 빠른 채팅 위젯. 아이콘 레일 하단, 알림 벨 옆에 자리잡은
+// 버튼으로 열고 닫는다(계정 메뉴·알림 팝오버와 같은 관용구 — 트리거 옆에서
+// 팝오버가 펼쳐진다). "지금 보고 있는 화면을 벗어나지 않고 온 김에 확인하고
+// 답장" 용도라, 방 목록 페이징이나 과거 메시지 무한 스크롤 같은 깊은 탐색
+// 기능은 전체 페이지(ChatPage) 몫으로 남겨두고 최근 방 20개 + 최신 메시지 한
+// 페이지만 가볍게 다룬다. /chat 페이지 자체에서는 Layout이 이 컴포넌트를 아예
+// 렌더링하지 않는다(같은 기능이 이미 전체 화면으로 떠 있는데 위젯까지 겹칠 이유가 없음).
 export function ChatWidget() {
   const { user } = useAuth();
   const location = useLocation();
@@ -197,11 +199,27 @@ export function ChatWidget() {
   if (!user) return null;
 
   return (
-    <div className="chat-widget" ref={rootRef}>
+    <div style={{ position: 'relative' }} ref={rootRef}>
+      <button className="rail-chat-trigger" onClick={togglePanel} title="채팅" aria-label="빠른 채팅 열기">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+        </svg>
+        {unreadCount > 0 && !open && (
+          <span className="rail-chat-trigger-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+        )}
+      </button>
+
       {open && (
         <div
           className="card popover-panel chat-widget-panel"
-          style={{ ['--popover-origin' as string]: 'bottom right' }}
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: '100%',
+            marginLeft: 10,
+            zIndex: 20,
+            ['--popover-origin' as string]: 'bottom left',
+          }}
         >
           {!activeRoom ? (
             <>
@@ -319,17 +337,8 @@ export function ChatWidget() {
         </div>
       )}
 
-      <button className="chat-widget-fab" onClick={togglePanel} title="채팅" aria-label="채팅 위젯 열기">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-        </svg>
-        {unreadCount > 0 && !open && (
-          <span className="chat-widget-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
-        )}
-      </button>
-
       {error && (
-        <p className="error-text" style={{ position: 'fixed', bottom: 92, right: 24, maxWidth: 280, zIndex: 30 }}>
+        <p className="error-text" style={{ position: 'fixed', bottom: 16, right: 16, maxWidth: 280, zIndex: 30 }}>
           {error}
         </p>
       )}
