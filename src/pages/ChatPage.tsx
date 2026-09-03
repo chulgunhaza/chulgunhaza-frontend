@@ -165,6 +165,18 @@ export function ChatPage() {
           unReadCount: 0, // 상대가 보낸 메시지엔 표시 안 하는 값이라 의미 없음
         },
       ]);
+
+      // INFO : 읽음 처리(markReadUpTo)는 서버가 GET /v1/chat/find/{roomId} 응답을 만들 때만
+      // 실행된다. 그런데 방을 이미 열어놓고 보는 중에 실시간으로 새 메시지가 오면 로컬
+      // state에 이어붙이기만 하고 그 GET을 다시 안 불러서, 방을 보고 있는데도 상대 쪽
+      // 안읽은 인원 수가 안 줄어드는 문제가 있었다(실측으로 발견 — "읽었는데 1이 안
+      // 사라짐"). 방을 지금 보고 있다는 뜻이니 여기서도 같은 GET을 한 번 더 불러서 읽음
+      // 처리를 트리거한다. 화면엔 이미 위에서 낙관적으로 붙여놨으니, 이 응답으로 messages를
+      // 덮어쓰진 않는다(덮어쓰면 깜빡이거나 방금 붙인 낙관적 항목이 씹힐 수 있음) — 순수하게
+      // "읽음 처리 트리거" 목적의 background 호출.
+      if (activeRoom) {
+        getChatMessages(activeRoom.roomId, 0, MESSAGE_PAGE_SIZE).catch(() => {});
+      }
     }
   });
 
