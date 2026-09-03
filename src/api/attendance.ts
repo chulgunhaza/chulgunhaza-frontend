@@ -12,7 +12,13 @@ export async function registerAttendance(employeeNo: number, checkInTime: Date):
   await apiClient.post('/v1/attendance/register', body);
 }
 
+// AttendanceCreateRequestDto.checkInTime의 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")은
+// Spring MVC의 폼/쿼리파라미터 바인딩에만 적용되고 @RequestBody(JSON) 역직렬화엔 영향을
+// 안 준다 — 실제로는 Jackson의 기본 LocalDateTime 파서가 그 자리를 대신하는데, 이건 ISO-8601
+// ("T" 구분자)만 받는다. 공백으로 보내면 500(DateTimeParseException)이 난다 — 실측으로
+// 발견(대시보드 "지금 출근 등록" 클릭 시 재현). 백엔드 DTO는 그대로 두고 프론트에서
+// Jackson이 실제로 받는 형식에 맞춰 보낸다.
 function formatDateTime(date: Date): string {
   const pad = (n: number) => String(n).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
