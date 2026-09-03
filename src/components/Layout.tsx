@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useChatUnreadCount } from '../hooks/useChatUnreadCount';
 import { NotificationBell } from './NotificationBell';
+import { ChatWidget } from './ChatWidget';
 
 const NAV_ITEMS = [
   { to: '/', label: '대시보드', end: true },
@@ -48,7 +49,7 @@ export function Layout() {
   return (
     <div className="app-shell">
       <aside className="icon-rail">
-        <div className="rail-mark" title="출근하자">출</div>
+        <div className="rail-mark" title="출근하자">GO</div>
         <nav className="rail-nav">
           {NAV_ITEMS.map((item) => (
             <NavLink
@@ -145,6 +146,10 @@ export function Layout() {
           </div>
         </main>
       </div>
+
+      {/* /chat 페이지에선 같은 기능이 이미 전체 화면으로 떠 있으니 위젯은 다른
+          화면에서만 렌더링한다(그래야 위젯의 백그라운드 소켓도 그 화면에서만 연결됨). */}
+      {!location.pathname.startsWith('/chat') && <ChatWidget />}
     </div>
   );
 }
