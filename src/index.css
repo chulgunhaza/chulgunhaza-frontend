@@ -153,19 +153,9 @@ input, select, textarea {
   transition: background 160ms var(--ease-out), color 160ms var(--ease-out), transform 160ms var(--ease-out);
 }
 
-.rail-item .rail-icon {
-  font-size: 20px;
-  line-height: 1;
-  transition: transform 200ms var(--ease-out);
-}
-
 .rail-item:hover {
   background: var(--surface-2);
   color: var(--ink-soft);
-}
-
-.rail-item:hover .rail-icon {
-  transform: translateY(-1px) scale(1.06);
 }
 
 .rail-item:active {

@@ -21,7 +21,6 @@ export function NotificationBell() {
   return (
     <div style={{ position: 'relative' }}>
       <button className="rail-item" style={{ position: 'relative' }} onClick={toggle} title="알림">
-        <span className="rail-icon">🔔</span>
         <span>알림</span>
         {unreadCount > 0 && (
           <span

@@ -4,9 +4,9 @@ import { useAuth } from '../context/AuthContext';
 import { NotificationBell } from './NotificationBell';
 
 const NAV_ITEMS = [
-  { to: '/', icon: '🏠', label: '대시보드', end: true },
-  { to: '/board', icon: '📋', label: '게시판', end: false },
-  { to: '/chat', icon: '💬', label: '채팅', end: false },
+  { to: '/', label: '대시보드', end: true },
+  { to: '/board', label: '게시판', end: false },
+  { to: '/chat', label: '채팅', end: false },
 ];
 
 const PAGE_TITLE: Record<string, string> = {
@@ -52,7 +52,6 @@ export function Layout() {
               end={item.end}
               className={({ isActive }) => `rail-item${isActive ? ' active' : ''}`}
             >
-              <span className="rail-icon">{item.icon}</span>
               <span>{item.label}</span>
             </NavLink>
           ))}

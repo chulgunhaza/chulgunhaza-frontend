@@ -46,7 +46,7 @@ export function BoardListPage() {
           />
         </div>
         <Link to="/board/new" className="btn btn-primary">
-          ✏️ 글쓰기
+          글쓰기
         </Link>
       </div>
 
