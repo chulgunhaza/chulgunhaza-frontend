@@ -28,13 +28,13 @@ export function BoardDetailPage() {
   }
 
   if (error) return <p className="error-text">{error}</p>;
-  if (!post) return <p style={{ color: 'var(--ink-faint)' }}>불러오는 중...</p>;
+  if (!post) return <p style={{ color: 'var(--ink-fade)' }}>불러오는 중...</p>;
 
   return (
-    <div className="card">
+    <div className="card" style={{ maxWidth: 760 }}>
       <span className="pill good">{post.category.categoryName}</span>
       <h2 style={{ marginBottom: 4 }}>{post.title}</h2>
-      <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 16 }}>
+      <div style={{ fontSize: 13, color: 'var(--ink-fade)', marginBottom: 16 }}>
         {post.author ?? '알 수 없음'} · 조회 {post.count}
       </div>
       <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>

@@ -15,7 +15,13 @@ const RECONNECT_MAX_DELAY_MS = 10000;
  *   끊기면 점점 늘어나는 딜레이(최대 10초)로 자동 재연결을 시도한다 — 예전엔
  *   한 번 끊기면 페이지를 새로고침하기 전까진 "연결 중" 표시에 영영 머물러 있었다.
  */
-export function useChatSocket(roomId: number | null, onMessage: (raw: unknown) => void) {
+export function useChatSocket(
+  roomId: number | null,
+  onMessage: (raw: unknown) => void,
+  // 채팅 위젯처럼 "패널이 접혀 있는 동안엔 소켓도 안 열어도 되는" 소비처를 위한 스위치.
+  // 기본값 true라 기존 ChatPage 호출부는 그대로 항상 연결된다.
+  enabled: boolean = true,
+) {
   const wsRef = useRef<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
   const onMessageRef = useRef(onMessage);
@@ -26,6 +32,7 @@ export function useChatSocket(roomId: number | null, onMessage: (raw: unknown) =
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (!enabled) return;
     shouldReconnectRef.current = true;
 
     function scheduleReconnect() {
@@ -70,7 +77,7 @@ export function useChatSocket(roomId: number | null, onMessage: (raw: unknown) =
       wsRef.current?.close();
       wsRef.current = null;
     };
-  }, []);
+  }, [enabled]);
 
   // 재연결로 새 WebSocket이 열릴 때마다(=connected가 다시 true가 될 때마다)
   // 현재 보고 있는 방을 다시 subscribe한다 — 재연결 직후에도 실시간 수신이 이어지도록.

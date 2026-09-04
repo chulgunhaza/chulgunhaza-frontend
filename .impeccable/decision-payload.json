@@ -1,0 +1,103 @@
+{
+  "title": "새 시각 세계를 선택하세요",
+  "question": "주사위가 배정한 방향은 '기안서'입니다. 그대로 갈 수도, 대안을 고를 수도, 다시 굴릴 수도 있습니다.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "기안서 (The Draft Document)",
+      "kicker": "THE ROLL",
+      "lineage": "한국 사무실의 공문서·품의서·결재판 양식",
+      "thesis": "앱 전체가 책상 위에 펼쳐진 한 장의 기안서 — 모든 행동은 칸을 채우는 일이고, 모든 승인은 주홍 도장이다.",
+      "palette": ["#fbf9f4", "#1b1a17", "#d9d5cb", "#c8401f", "#6f6a60"],
+      "materials": ["종이 결", "머리글 눈금선", "주홍 도장(인장)", "타자기 숫자"],
+      "viewport": "상단에 문서번호·시행일자가 적힌 문서 머리, 오늘 출근/연차 수치는 결재란 표로, '출근 등록' 버튼은 도장을 찍는 동작으로.",
+      "risk": "종이의 온기와 도장의 촉감이 소심하면 차가운 관공서 서식으로 읽힌다.",
+      "raised": [
+        { "from": "cd-rom-console", "raise": "모든 컨트롤은 색이 아니라 눌린 형상 자체로 상태를 말한다 (버튼이 눌리는 깊이)." },
+        { "from": "orienteering-map", "raise": "주홍은 승인·행동 신호 전용 잉크로 예약 — 지형(본문)에는 절대 쓰지 않는다." },
+        { "from": "mesophotic-dive", "raise": "시각·근무시간·잔여 연차 등 모든 숫자는 고정폭 숫자로 세로 정렬." },
+        { "from": "normalling-jackfield", "raise": "상태는 색조가 아니라 기호로 — 도장, 취소선, 빈 칸이 상태를 그린다." }
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.webp"
+    },
+    {
+      "id": "model-pick",
+      "label": "지하철 사이니지 (Transit Wayfinding)",
+      "kicker": "IMPECCABLE'S PICK",
+      "lineage": "서울 지하철 역내 안내 표지 시스템",
+      "thesis": "출근길의 안내판 그대로 — 페이지는 역, 모듈은 노선색, 사용자는 표지판만 따라가면 목적지에 닿는다.",
+      "palette": ["#ffffff", "#101418", "#0052a4", "#00a651", "#e63312"],
+      "materials": ["에나멜 표지판", "노선색 칩", "굵은 고딕 웨이파인딩"],
+      "viewport": "흰 타일 벽면 위에 굵은 검정 고딕 목적지 표지, 각 모듈은 노선색 바로 구분되는 출구처럼 배치.",
+      "risk": "가장 익숙한 방향 — 이 카테고리에서 대부분의 실행이 도착하는 곳이며, 소심하면 여느 공공기관 UI와 구분이 안 된다.",
+      "comp": ".impeccable/mocks/decision/model-pick.webp"
+    },
+    {
+      "id": "challenger-jackfield",
+      "label": "Normalling Jackfield",
+      "verdict": "declined",
+      "lineage": "기계실 패치베이 스케줄",
+      "case": "한국 사무직 사용자에게 기계실은 낯선 세계 — 애청자 공감대 실패로 탈락.",
+      "kept": "상태를 색이 아니라 기호(선의 끊김·겹침)로 그리는 규율은 기안서의 도장/취소선으로 이식했다.",
+      "hero": "https://impeccable.style/worlds/cards/operate-b-normalled-jackfield-hero.webp"
+    },
+    {
+      "id": "challenger-teletext",
+      "label": "Teletext Service",
+      "verdict": "declined",
+      "lineage": "방송 텔레텍스트 잡지",
+      "case": "40×24 블록 격자에 한글은 들어가지 않는다 — 명확성 실패로 탈락.",
+      "kept": "모든 것이 하나의 고정 격자 위에 놓이는 엄격함만 가져왔다.",
+      "hero": "https://impeccable.style/worlds/cards/broadcast-programming-teletext-service-hero.webp"
+    },
+    {
+      "id": "challenger-cdrom",
+      "label": "CD-ROM Console",
+      "verdict": "declined",
+      "lineage": "90년대 중반 CD-ROM 인터페이스",
+      "case": "렌더링된 기계 콘솔은 표 중심의 근태 데이터를 담기에 창이 너무 작다 — 탈락.",
+      "kept": "컨트롤이 눌리는 물리적 깊이(눌린 토글이 패널에 파묻히는 형상)는 버튼 규율로 이식.",
+      "hero": "https://impeccable.style/worlds/cards/digital-design-canon-cdrom-chrome-navigation-hero.webp"
+    },
+    {
+      "id": "challenger-orienteering",
+      "label": "Orienteering Map",
+      "verdict": "declined",
+      "lineage": "오리엔티어링 지도와 범례",
+      "case": "오리엔티어링은 국내 청중이 몸으로 아는 세계가 아니다 — 탈락.",
+      "kept": "'신호색 하나는 지형 위를 달리며 지형을 건드리지 않는다'는 예약 잉크 규율.",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-orienteering-map-hero.webp"
+    },
+    {
+      "id": "challenger-dive",
+      "label": "Mesophotic Deep Dive",
+      "verdict": "declined",
+      "lineage": "화산섬 벽면 심해 잠수",
+      "case": "매일 아침 밝게 켜는 근태 도구에 심해의 어둠은 맞지 않는다 — 두 축 모두 실패.",
+      "kept": "다이브 컴퓨터처럼 모든 라이브 숫자를 고정폭으로 세로 정렬하는 규율.",
+      "hero": "https://impeccable.style/worlds/cards/rivers-tides-ocean-depths-mesophotic-deep-dive-hero.webp"
+    },
+    {
+      "id": "challenger-orizuru",
+      "label": "Orizuru Fold Sequence",
+      "verdict": "declined",
+      "lineage": "주홍 와시 한 장의 종이학 접기 순서",
+      "case": "접기 순서의 서사는 아름답지만 채팅·게시판·캘린더의 밀도를 담을 수 없다 — 탈락.",
+      "kept": "여백 열에 절차 번호를 매기는 규율.",
+      "hero": "https://impeccable.style/worlds/cards/paper-folds-pleats-deployable-orizuru-crane-sequence-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "comp", "toggle": true },
+  "canon": true,
+  "canonCard": {
+    "label": "카테고리 표준 (깔끔한 SaaS 대시보드)",
+    "thesis": "이 카테고리가 늘 만드는 모습 — 흰 배경, 회색 텍스트, 파란 강조 — 을 최고 수준의 완성도로.",
+    "palette": ["#ffffff", "#111827", "#2563eb"],
+    "materials": ["정돈된 그리드", "부드러운 그림자"],
+    "viewport": "방문자가 기대하는 배열 그대로, 최고 공정 수준으로.",
+    "risk": "의도적으로 경쟁 제품과 구분되지 않는다.",
+    "comp": ".impeccable/mocks/decision/canon.webp"
+  },
+  "steer": true
+}

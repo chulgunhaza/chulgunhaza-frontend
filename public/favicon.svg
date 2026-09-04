@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ff8300"/>
-      <stop offset="100%" stop-color="#e60012"/>
+      <stop offset="0%" stop-color="#ffa733"/>
+      <stop offset="100%" stop-color="#ff5b45"/>
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="16" fill="url(#g)"/>
-  <text x="32" y="42" font-family="-apple-system, 'Apple SD Gothic Neo', sans-serif" font-size="28" font-weight="800" fill="#ffffff" text-anchor="middle">출</text>
+  <text x="32" y="41" font-family="-apple-system, 'Apple SD Gothic Neo', sans-serif" font-size="22" font-weight="800" letter-spacing="-0.5" fill="#ffffff" text-anchor="middle">GO</text>
 </svg>

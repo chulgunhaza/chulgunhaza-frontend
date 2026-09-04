@@ -282,7 +282,7 @@ export function ChatPage() {
   }
 
   return (
-    <div style={{ display: 'flex', gap: 16, height: 'calc(100vh - 152px)' }}>
+    <div style={{ display: 'flex', gap: 16, height: 'calc(100vh - 152px)', maxWidth: 1000 }}>
       <div className="card" style={{ width: 260, height: '100%', display: 'flex', flexDirection: 'column', gap: 8, padding: 16, position: 'relative' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, fontSize: 14 }}>채팅방</h3>
