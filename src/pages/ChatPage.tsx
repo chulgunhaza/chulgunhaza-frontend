@@ -6,6 +6,7 @@ import { useChatSocket } from '../hooks/useChatSocket';
 import type { ChatRoomListResponseDto, ChatMessageListResponseDto, ChatReadEvent } from '../types/chat';
 import type { EmployeeListResponseDto } from '../types/employee';
 import { toApiError } from '../api/client';
+import { notifyChatUnreadChanged } from '../utils/chatEvents';
 
 const ROOM_PAGE_SIZE = 20;
 const MESSAGE_PAGE_SIZE = 30;
@@ -175,7 +176,9 @@ export function ChatPage() {
       // 덮어쓰진 않는다(덮어쓰면 깜빡이거나 방금 붙인 낙관적 항목이 씹힐 수 있음) — 순수하게
       // "읽음 처리 트리거" 목적의 background 호출.
       if (activeRoom) {
-        getChatMessages(activeRoom.roomId, 0, MESSAGE_PAGE_SIZE).catch(() => {});
+        getChatMessages(activeRoom.roomId, 0, MESSAGE_PAGE_SIZE)
+          .then(() => notifyChatUnreadChanged())
+          .catch(() => {});
       }
     }
   });
@@ -265,6 +268,19 @@ export function ChatPage() {
     return activeRoom?.members.find((m) => m.id === senderId)?.name ?? '알 수 없음';
   }
 
+  // 방을 열면 실제 읽음 처리(서버의 markReadUpTo)는 뒤이은 메시지 목록 조회가
+  // 트리거하지만, 그 응답을 기다리는 동안 방 목록의 안읽음 뱃지가 그대로 남아있는
+  // 게 어색해서 클릭 즉시 로컬에서 0으로 지운다 — "방 목록 눌렀는데 숫자가 안
+  // 사라진다"는 피드백으로 추가.
+  function selectRoom(room: ChatRoomListResponseDto) {
+    setActiveRoom(room);
+    setRooms((prev) => prev.map((r) => (r.roomId === room.roomId ? { ...r, unReadMessageCount: 0 } : r)));
+    // 네브 레일의 채팅 뱃지도 같은 화면 안에서 바로 줄어들게 알린다.
+    if (room.unReadMessageCount > 0) {
+      notifyChatUnreadChanged();
+    }
+  }
+
   return (
     <div style={{ display: 'flex', gap: 16, height: 'calc(100vh - 152px)' }}>
       <div className="card" style={{ width: 260, height: '100%', display: 'flex', flexDirection: 'column', gap: 8, padding: 16, position: 'relative' }}>
@@ -286,7 +302,7 @@ export function ChatPage() {
             <button
               key={room.roomId}
               className={`btn room-item${activeRoom?.roomId === room.roomId ? ' active' : ''}`}
-              onClick={() => setActiveRoom(room)}
+              onClick={() => selectRoom(room)}
             >
               <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
                 {room.roomName}
