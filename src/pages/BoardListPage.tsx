@@ -50,7 +50,7 @@ export function BoardListPage() {
         </Link>
       </div>
 
-      {loading && <p style={{ color: 'var(--ink-faint)' }}>불러오는 중...</p>}
+      {loading && <p style={{ color: 'var(--ink-fade)' }}>불러오는 중...</p>}
       {error && <p className="error-text">{error}</p>}
 
       {page && (
@@ -67,7 +67,7 @@ export function BoardListPage() {
             <tbody>
               {page.contents.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ color: 'var(--ink-faint)' }}>
+                  <td colSpan={4} style={{ color: 'var(--ink-fade)' }}>
                     게시글이 없습니다.
                   </td>
                 </tr>

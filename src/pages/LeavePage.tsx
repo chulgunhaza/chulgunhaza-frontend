@@ -115,7 +115,7 @@ export function LeavePage() {
             modifiersClassNames={{ applied: 'rdp-day-applied' }}
           />
           {appliedDates.length > 0 && (
-            <p style={{ fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 4 }}>
+            <p style={{ fontSize: 11.5, color: 'var(--ink-fade)', marginTop: 4 }}>
               <span className="applied-dot" /> 이 브라우저에서 신청한 날짜
             </p>
           )}

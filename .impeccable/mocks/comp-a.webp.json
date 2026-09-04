@@ -1,0 +1,7 @@
+{
+  "prompt": "High-fidelity UI design comp of a web dashboard, landscape desktop 1440x900, no browser chrome. Korean office groupware app named '출근하자' (chulgunhaza, meaning 'let's go to work'), an internal tool for attendance check-in, annual leave, board posts, and chat. COMPOSITION: left edge narrow vertical icon rail on washi cream #EDE3D1 with small sumi-ink icons (home, calendar, board) and the active item marked by a small gold dot #D4AF37; center-left large headline '오늘의 출근' in bold black humanist sans with body text; center-right one large square panel of vermilion washi paper #D83A2E with visible kozo fiber texture, covered in thin fold-white crease lines radiating like an origami crease pattern, showing big tabular time '09:02' in fold-white ink; right column titled 'CURRENT FOLD' in small caps tracking with a gold dot, listing live status lines '출근 완료 09:02', '안 읽은 채팅 3', '새 공지 1'; bottom strip 'THE DAY IN SIX STEPS' with six numbered step cards 01-06 (01 출근 02 연차 03 게시판 04 채팅 05 알림 06 내 정보), each card with a small square fold-diagram thumbnail, active card 01 filled vermilion. WORLD: grounds are fold-white #F6F1E9 and washi cream #EDE3D1 paper with grain; sumi black ink #1A1A1A text, ink-fade gray #8E8A83 secondary; all numerals in monospace; thin crease-line dividers; small-caps section labels. Origami instruction-sheet discipline, warm paper tactility, award-winning web design.",
+  "createdAt": "2026-09-04T00:28:04.775Z",
+  "tool": "generate-image.mjs",
+  "model": "gpt-image-2",
+  "approved": true
+}

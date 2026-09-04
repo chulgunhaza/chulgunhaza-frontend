@@ -1,41 +1,45 @@
+/*
+  출근하자 — 오리주루(종이학 접기) 시각 시스템.
+  지면은 와시 종이, 선은 접기 자국(크리스) 헤어라인, 숫자는 고정폭, 현재/라이브는
+  골드 도트, 버밀리온은 '살아있는 접기'(주 액션·현재 시각)에만 예약한다.
+  팔레트 수치는 승인 컴프(.impeccable/mocks/comp-a.webp) 픽셀 실측값.
+*/
 :root {
-  /* 출근하자 — "출근길의 아침" 테마. 개발 초기에 임시로 얹혔던 SK 레드 대신,
-     아침 햇살(앰버 → 코랄)을 브랜드 포인트로 삼았다. 실사용 규모가 작은 사내
-     도구라는 제품 성격에 맞춰 한 가지 강조색만 쓰는 절제된 팔레트를 유지한다. */
-  --brand: #ff5b45;
-  --brand-2: #ffa733;
-  --brand-dark: #e0402c;
-  --brand-soft: #fff1e4;
-  --brand-ink: #5a2413;
-  --brand-gradient: linear-gradient(135deg, var(--brand-2), var(--brand));
+  --paper: #e9e4dc;
+  --paper-warm: #d6cbb8;
+  --sheet: #f2ede3;
+  --sheet-2: #eae3d5;
 
-  --bg: #fcf5ec;
-  --surface: #ffffff;
-  --surface-2: #f7e9d9;
-  --rail-bg: #ffffff;
+  --vermilion: #d1412b;
+  --vermilion-deep: #a93320;
 
-  --ink: #2b1b12;
-  --ink-soft: #6b5646;
-  --ink-faint: #9c8672;
-  --border: #efdcc7;
+  --ink: #1a1a1a;
+  --ink-soft: #4d463d;
+  --ink-fade: #8e8a83;
 
-  /* 시맨틱 컬러는 브랜드(코랄/앰버)와 헷갈리지 않게 채도·색상 축을 분리했다 —
-     warn도 앰버 계열이라 특히 신경 써서, 브랜드보다 확연히 탁하고 어둡게 뒀다. */
-  --good: #227a50;
-  --good-soft: #e3f1e9;
-  --warn: #a66a0c;
-  --warn-soft: #f7e8d2;
-  --danger: #b23a2e;
-  --danger-soft: #f8e2dc;
+  --crease: rgba(26, 26, 26, 0.16);
+  --crease-soft: rgba(26, 26, 26, 0.09);
+  --crease-on-vermilion: rgba(246, 241, 233, 0.42);
+  --fold-white: #f6f1e9;
 
-  --shadow-sm: 0 1px 2px rgba(43, 27, 18, 0.06);
-  --shadow-md: 0 4px 16px rgba(43, 27, 18, 0.10);
-  --shadow-lg: 0 12px 32px rgba(43, 27, 18, 0.16);
+  --gold: #d0a229;
+
+  /* 상태는 색조가 아니라 기호로 읽히게 하되, 보조 색은 종이 위의 먹처럼 탁하게 */
+  --good: #3f6b4f;
+  --good-soft: #dfe6da;
+  --warn: #8a6b12;
+  --warn-soft: #eee3c4;
+  --danger: #a93320;
+  --danger-soft: #efd9d0;
+
+  --shadow-sm: 0 1px 2px rgba(26, 26, 20, 0.07);
+  --shadow-md: 0 3px 10px rgba(26, 26, 20, 0.10);
+  --shadow-lg: 0 14px 36px rgba(26, 26, 20, 0.18);
 
   --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  /* 숫자는 측정값 — 고정폭으로 세로 정렬 (다이브 컴퓨터 규율) */
   --font-mono: ui-monospace, "SF Mono", Consolas, monospace;
 
-  /* animations.dev 스타일 커스텀 이징 — 기본 CSS 이징은 UI에 쓰기엔 힘이 약하다 */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
@@ -46,7 +50,10 @@
 
 html, body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--paper);
+  background-image: url('/assets/washi-paper.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
 }
 
 body {
@@ -58,7 +65,7 @@ body {
 }
 
 a {
-  color: var(--brand-dark);
+  color: var(--ink);
   text-decoration: none;
 }
 
@@ -70,6 +77,18 @@ button {
 input, select, textarea {
   font-family: inherit;
   font-size: 14px;
+  caret-color: var(--vermilion);
+}
+
+/* 브라우저 기본 표면까지 세계관에 편입 — 선택 영역, 포커스, 스크롤바 */
+::selection {
+  background: var(--vermilion);
+  color: var(--fold-white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -85,8 +104,8 @@ input, select, textarea {
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ded0bc;
-  border-radius: 8px;
+  background: #c3b8a4;
+  border-radius: 0;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -103,39 +122,31 @@ input, select, textarea {
 .icon-rail {
   width: 76px;
   flex-shrink: 0;
-  background: var(--rail-bg);
-  border-right: 1px solid var(--border);
+  background-color: var(--paper-warm);
+  background-image: url('/assets/washi-paper.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
+  border-right: 1px solid var(--crease);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px 0;
+  padding: 18px 0;
 }
 
 .rail-mark {
   width: 40px;
   height: 40px;
-  border-radius: 12px;
-  background: var(--brand-gradient);
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  letter-spacing: -0.02em;
-  font-weight: 800;
+  color: var(--vermilion);
   margin-bottom: 20px;
-  box-shadow: var(--shadow-sm);
-  transition: transform 200ms var(--ease-out);
-}
-
-.rail-mark:hover {
-  transform: scale(1.05);
 }
 
 .rail-nav {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   flex: 1;
 }
 
@@ -145,42 +156,37 @@ input, select, textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 8px 0;
-  border-radius: 12px;
-  color: var(--ink-faint);
+  gap: 4px;
+  padding: 9px 0 8px;
+  border-radius: 3px;
+  color: var(--ink-fade);
   font-size: 11px;
   font-weight: 600;
   border: none;
   background: transparent;
-  transition: background 160ms var(--ease-out), color 160ms var(--ease-out), transform 160ms var(--ease-out);
+  transition: background 160ms var(--ease-out), color 160ms var(--ease-out);
 }
 
 .rail-item:hover {
-  background: var(--surface-2);
+  background: rgba(26, 26, 26, 0.05);
   color: var(--ink-soft);
 }
 
-.rail-item:active {
-  transform: scale(0.96);
-}
-
+/* 활성 항목은 배지가 아니라 골드 도트 — 현재 위치를 가리키는 '지금 여기' 마커 */
 .rail-item.active {
-  background: var(--brand-soft);
-  color: var(--brand-dark);
+  color: var(--ink);
 }
 
-/* 현재 위치를 왼쪽에 얇은 브랜드 컬러 바로 표시 (네이버웍스류 아이콘 레일 관용구) */
 .rail-item.active::before {
   content: '';
   position: absolute;
-  left: -16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 20px;
-  border-radius: 0 3px 3px 0;
-  background: var(--brand);
+  top: -1px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 2px var(--paper-warm);
 }
 
 .rail-bottom {
@@ -194,28 +200,20 @@ input, select, textarea {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--brand);
-  color: white;
+  background: transparent;
+  border: 1px solid var(--crease);
+  color: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  border: none;
-  transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+  transition: background 160ms var(--ease-out), border-color 160ms var(--ease-out);
 }
 
 .rail-avatar:hover {
-  transform: scale(1.06);
-  box-shadow: var(--shadow-sm);
-}
-
-.rail-avatar:active {
-  transform: scale(0.94);
-}
-
-.rail-avatar:active {
-  transform: scale(0.95);
+  background: var(--sheet);
+  border-color: var(--ink-fade);
 }
 
 .shell-body {
@@ -225,21 +223,31 @@ input, select, textarea {
   min-width: 0;
 }
 
+/* 문서 머리: 제목 + 시행일(고정폭) + 사용자 */
 .top-header {
-  height: 56px;
+  min-height: 58px;
   flex-shrink: 0;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--crease);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 28px;
+  gap: 16px;
 }
 
 .top-header h1 {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   margin: 0;
+}
+
+.top-header .doc-date {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-fade);
+  letter-spacing: 0.02em;
+  margin-left: 10px;
 }
 
 .top-header .user-chip {
@@ -247,7 +255,7 @@ input, select, textarea {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--ink-soft);
+  color: var(--ink-fade);
 }
 
 .top-header .user-chip b {
@@ -257,44 +265,49 @@ input, select, textarea {
 .main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 32px 48px;
+  padding: 28px 36px 56px;
 }
 
 .content-inner {
-  max-width: 1280px;
+  max-width: 1180px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
-/* ---------- 카드 / 버튼 / 폼 ---------- */
+/* ---------- 종이 시트 / 버튼 / 폼 ---------- */
 
+/* 카드는 '둥근 패널'이 아니라 한 장의 종이 — 각은 작게, 경계는 크리스 헤어라인 */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  position: relative;
+  background-color: var(--sheet);
+  background-image: url('/assets/washi-paper.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--crease-soft);
+  border-radius: 3px;
   padding: 22px;
   box-shadow: var(--shadow-sm);
-  animation: card-in 320ms var(--ease-out) both;
+  animation: fold-in 340ms var(--ease-out) both;
 }
 
 .card h2, .card h3 {
   margin-top: 0;
 }
 
-@keyframes card-in {
+/* 시트가 위에서부터 펼쳐지며 놓이는 모션 — 접기 세계의 등장 */
+@keyframes fold-in {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: perspective(900px) rotateX(-4deg) translateY(8px);
+    transform-origin: top center;
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: perspective(900px) rotateX(0deg) translateY(0);
   }
 }
 
-/* 팝오버(알림 패널, 채팅 상대 피커)는 트리거 지점에서 스케일-인 되어야 자연스럽다 —
-   페이지 카드의 슬라이드-업(card-in)과는 다른 모션이라 별도로 오버라이드한다. */
 .card.popover-panel {
   transform-origin: var(--popover-origin, bottom left);
   animation: popover-in 180ms var(--ease-out) both;
@@ -303,7 +316,7 @@ input, select, textarea {
 @keyframes popover-in {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
@@ -312,39 +325,61 @@ input, select, textarea {
 }
 
 .btn {
-  border: 1px solid var(--border);
-  background: var(--surface);
+  border: 1px solid var(--crease);
+  background: var(--sheet);
   color: var(--ink);
   padding: 9px 16px;
-  border-radius: 10px;
+  border-radius: 3px;
   font-size: 13.5px;
   font-weight: 600;
+  box-shadow: var(--shadow-sm);
   transition: border-color 140ms var(--ease-out), background 140ms var(--ease-out),
-    color 140ms var(--ease-out), transform 120ms var(--ease-out), box-shadow 140ms var(--ease-out);
+    color 140ms var(--ease-out), box-shadow 140ms var(--ease-out), transform 120ms var(--ease-out);
 }
 
 .btn:hover {
-  border-color: var(--brand);
-  background: var(--brand-soft);
-  color: var(--brand-dark);
+  border-color: var(--ink-fade);
+  background: var(--fold-white);
 }
 
+/* 눌린 형상 자체가 상태를 말한다 — 버튼은 눌리는 깊이를 가진다 */
 .btn:active {
-  transform: scale(0.97);
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 3px rgba(26, 26, 20, 0.14);
 }
 
 .btn-primary {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: white;
-  box-shadow: 0 2px 8px rgba(255, 91, 69, 0.24);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--vermilion);
+  background-image: url('/assets/vermilion-washi.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
+  border-color: var(--vermilion-deep);
+  color: var(--fold-white);
+  box-shadow: 0 2px 6px rgba(169, 51, 32, 0.30);
+}
+
+/* 주 액션의 골드 도트 — 이 버튼이 '지금의 접기'라는 표시 */
+.btn-primary::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
 }
 
 .btn-primary:hover {
-  background: var(--brand-dark);
-  border-color: var(--brand-dark);
-  color: white;
-  box-shadow: 0 4px 14px rgba(255, 91, 69, 0.3);
+  background-color: var(--vermilion-deep);
+  border-color: var(--vermilion-deep);
+  color: var(--fold-white);
+  box-shadow: 0 4px 12px rgba(169, 51, 32, 0.36);
+}
+
+.btn-primary:active {
+  box-shadow: inset 0 2px 5px rgba(90, 20, 8, 0.45);
 }
 
 .btn-danger {
@@ -357,13 +392,16 @@ input, select, textarea {
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.55;
   cursor: not-allowed;
-  background: var(--surface);
-  border-color: var(--border);
-  color: var(--ink-faint);
+  background: var(--sheet-2);
+  border-color: var(--crease-soft);
+  color: var(--ink-fade);
   box-shadow: none;
   transform: none;
+}
+.btn:disabled::before {
+  content: none;
 }
 
 .field {
@@ -374,18 +412,20 @@ input, select, textarea {
 }
 
 .field label {
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--ink-soft);
 }
 
 .field input,
 .field select,
 .field textarea {
-  padding: 9px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid var(--crease);
+  border-radius: 0;
+  background: transparent;
   color: var(--ink);
   transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
 }
@@ -393,15 +433,15 @@ input, select, textarea {
 .field input:hover,
 .field select:hover,
 .field textarea:hover {
-  border-color: #c7cad0;
+  border-bottom-color: var(--ink-fade);
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px var(--brand-soft);
+  border-bottom-color: var(--vermilion);
+  box-shadow: 0 1px 0 var(--vermilion);
 }
 
 .error-text {
@@ -412,34 +452,351 @@ input, select, textarea {
 .pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-size: 12px;
   font-weight: 600;
   padding: 3px 10px;
-  border-radius: 999px;
+  border-radius: 2px;
+  border: 1px solid transparent;
 }
 
-.pill.good { background: var(--good-soft); color: var(--good); }
-.pill.warn { background: var(--warn-soft); color: var(--warn); }
-.pill.danger { background: var(--danger-soft); color: var(--danger); }
+.pill.good { background: var(--good-soft); color: var(--good); border-color: rgba(63, 107, 79, 0.3); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); border-color: rgba(138, 107, 18, 0.3); }
+.pill.danger { background: var(--danger-soft); color: var(--danger); border-color: rgba(169, 51, 32, 0.3); }
 
-/* 라벨+숫자 한 쌍(연차 요약, 통계 타일 등에서 공통으로 쓰는 모양) */
+/* 라벨+숫자 한 쌍 — 숫자는 전부 고정폭 측정값 */
 .stat-label {
-  font-size: 11.5px;
-  color: var(--ink-faint);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-fade);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.10em;
 }
 .stat-value {
-  font-size: 22px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 24px;
   font-weight: 700;
   color: var(--ink);
 }
 .stat-value.highlight {
-  color: var(--brand-dark);
+  color: var(--vermilion);
 }
 
-/* ---------- 대시보드(메인 페이지) ---------- */
+/* ---------- 대시보드: 오늘의 접기 ---------- */
+
+/* 첫 뷰포트: 헤드라인 / 버밀리온 크리스 스퀘어(실시간 시계) / 현재 단계 열 */
+.fold-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr) minmax(220px, 0.7fr);
+  gap: 36px;
+  align-items: start;
+  animation: fold-in 340ms var(--ease-out) both;
+}
+
+.fold-intro h2 {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 6px 0 14px;
+}
+
+.fold-intro .lede {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+  max-width: 38ch;
+}
+
+/* 눈금 메타 행 — 라벨과 값이 크리스 선으로 구분된 문서 필드 */
+.fold-meta {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 22px;
+  max-width: 340px;
+}
+
+.fold-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 7px 2px;
+  border-bottom: 1px solid var(--crease-soft);
+  font-size: 13px;
+}
+
+.fold-meta-row .k {
+  color: var(--ink-fade);
+  font-weight: 600;
+}
+
+.fold-meta-row .v {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.fold-square {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-width: 380px;
+  justify-self: center;
+  width: 100%;
+  background-color: var(--vermilion);
+  background-image: url('/assets/vermilion-washi.webp');
+  background-size: cover;
+  background-blend-mode: multiply;
+  box-shadow: 0 10px 30px rgba(169, 51, 32, 0.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--fold-white);
+}
+
+/* 크리스 패턴 — 정사각형 위의 접기 자국. 도형은 코드가 그린다 */
+.fold-square .creases {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fold-square .fold-clock {
+  position: relative;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(40px, 4.6vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.fold-square .fold-clock-label {
+  position: relative;
+  margin-top: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* 출근 등록 = 하루의 첫 접기: 스퀘어의 코너가 들리며 완료 스탬프가 찍힌다 */
+.fold-square .fold-corner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 64px;
+  height: 64px;
+  background: var(--fold-white);
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  box-shadow: -3px -3px 8px rgba(90, 20, 8, 0.25);
+  transition: width 420ms var(--ease-in-out), height 420ms var(--ease-in-out);
+}
+
+.fold-square.folded .fold-corner {
+  width: 120px;
+  height: 120px;
+}
+
+.fold-square .fold-stamp {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--vermilion);
+  opacity: 0;
+  transform: rotate(-8deg) scale(1.4);
+  transition: opacity 200ms var(--ease-out) 260ms, transform 300ms var(--ease-out) 260ms;
+}
+
+.fold-square.folded .fold-stamp {
+  opacity: 1;
+  transform: rotate(-8deg) scale(1);
+}
+
+.fold-status {
+  border-top: 2px solid var(--ink);
+  padding-top: 10px;
+}
+
+.fold-status .fold-status-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+/* 현재 단계 마커 — 골드 도트 */
+.gold-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+.gold-dot.live {
+  animation: gold-pulse 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes gold-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(208, 162, 41, 0.45); }
+  50% { box-shadow: 0 0 0 5px rgba(208, 162, 41, 0); }
+}
+
+.fold-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--crease-soft);
+  font-size: 13.5px;
+}
+
+.fold-status-row .k {
+  flex: 1;
+  color: var(--ink-soft);
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fold-status-row .v {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+/* 하루의 단계 스트립 — 번호 매겨진 접기 순서도 */
+.step-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.step-strip-head {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-fade);
+  border-top: 1px solid var(--crease);
+  padding-top: 12px;
+}
+
+.step-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background-color: var(--sheet);
+  background-image: url('/assets/washi-paper.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--crease-soft);
+  border-radius: 3px;
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  overflow: hidden;
+  transition: box-shadow 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+
+.step-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* 호버 시 코너가 접히듯 들린다 — 종이 조각의 물성 */
+.step-card::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  background: var(--sheet-2);
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  box-shadow: -2px -2px 5px rgba(26, 26, 20, 0.12);
+  transition: width 240ms var(--ease-out), height 240ms var(--ease-out);
+}
+
+.step-card:hover::after {
+  width: 26px;
+  height: 26px;
+}
+
+.step-card .step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.step-card .step-no {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-fade);
+}
+
+.step-card .step-name {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.step-card .fold-diagram {
+  width: 100%;
+  height: auto;
+  color: var(--ink-fade);
+}
+
+/* 현재 단계 카드는 버밀리온 — 지금 접고 있는 한 장 */
+.step-card.current {
+  background-color: var(--vermilion);
+  background-image: url('/assets/vermilion-washi.webp');
+  background-blend-mode: multiply;
+  background-size: 512px;
+  border-color: var(--vermilion-deep);
+  color: var(--fold-white);
+  cursor: default;
+}
+
+.step-card.current:hover {
+  transform: none;
+}
+
+.step-card.current .step-no,
+.step-card.current .fold-diagram {
+  color: rgba(246, 241, 233, 0.75);
+}
+
+.step-card.current .step-head::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-left: auto;
+  align-self: center;
+}
+
+/* ---------- 대시보드 하단 요약 그리드 ---------- */
 
 .dashboard-grid {
   display: grid;
@@ -455,14 +812,36 @@ input, select, textarea {
   }
 }
 
+@media (max-width: 980px) {
+  .fold-hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .fold-square {
+    max-width: 320px;
+    justify-self: start;
+  }
+  .step-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .step-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fold-intro h2 {
+    font-size: 32px;
+  }
+}
+
 .stat-tile-row {
   display: flex;
-  gap: 28px;
+  gap: 32px;
   flex-wrap: wrap;
 }
 
-/* 대시보드의 채팅방/게시판 미리보기 목록 — 링크형 리스트 아이템. room-item(버튼)과
-   달리 <Link>/<a>로 쓰이는 곳도 있어서 별도 클래스로 뒀다. */
+/* 미리보기 목록 — 크리스 선으로 구분된 문서 행 */
 .preview-list {
   display: flex;
   flex-direction: column;
@@ -473,7 +852,7 @@ input, select, textarea {
   align-items: center;
   gap: 10px;
   padding: 10px 4px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--crease-soft);
   color: inherit;
   transition: background 140ms var(--ease-out);
 }
@@ -481,7 +860,7 @@ input, select, textarea {
   border-bottom: none;
 }
 .preview-row:hover {
-  background: var(--surface-2);
+  background: rgba(26, 26, 26, 0.04);
 }
 .preview-row-title {
   display: block;
@@ -494,7 +873,7 @@ input, select, textarea {
 .preview-row-sub {
   display: block;
   font-size: 12px;
-  color: var(--ink-faint);
+  color: var(--ink-fade);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -502,24 +881,22 @@ input, select, textarea {
 }
 
 /* ---------- 연차 페이지 캘린더(react-day-picker) ---------- */
-/* 라이브러리 기본 팔레트 대신 앱 토큰(코랄 브랜드)으로 덮어써서 이질감을 없앤다. */
 .leave-calendar .rdp-root {
-  --rdp-accent-color: var(--brand);
-  --rdp-accent-background-color: var(--brand-soft);
-  --rdp-today-color: var(--brand-dark);
+  --rdp-accent-color: var(--vermilion);
+  --rdp-accent-background-color: var(--danger-soft);
+  --rdp-today-color: var(--vermilion-deep);
   font-family: var(--font);
   margin: 0;
 }
 .leave-calendar .rdp-day_button {
-  border-radius: 10px;
+  border-radius: 2px;
 }
 .leave-calendar .rdp-selected .rdp-day_button {
-  background: var(--brand);
-  color: white;
+  background: var(--vermilion);
+  color: var(--fold-white);
   font-weight: 700;
 }
-/* 이 브라우저에서 신청한 날짜 — 선택 색(브랜드)과 헷갈리지 않게 점 하나로만
-   구분한다. 선택된 날이 동시에 신청한 날일 수도 있어 배경색이 아니라 오버레이. */
+/* 신청한 날짜 — 선택(버밀리온)과 겹칠 수 있으니 점으로만 구분 */
 .leave-calendar .rdp-day-applied .rdp-day_button {
   position: relative;
 }
@@ -535,7 +912,7 @@ input, select, textarea {
   background: var(--good);
 }
 .leave-calendar .rdp-selected.rdp-day-applied .rdp-day_button::after {
-  background: white;
+  background: var(--fold-white);
 }
 .applied-dot {
   display: inline-block;
@@ -546,8 +923,7 @@ input, select, textarea {
   margin-right: 2px;
 }
 
-/* 연결 상태 같은 걸 매번 텍스트 배지로 보여주면 시끄러워서, 자주 바뀌는 상태는
-   점 하나로 — 연결되면 초록, 아니면 무채색 회색. */
+/* 연결 상태 — 점 하나로 */
 .status-dot {
   display: inline-block;
   width: 8px;
@@ -563,10 +939,11 @@ input, select, textarea {
 }
 
 .status-dot.offline {
-  background: #b4b8c0;
-  box-shadow: 0 0 0 3px var(--surface-2);
+  background: var(--ink-fade);
+  box-shadow: 0 0 0 3px var(--sheet-2);
 }
 
+/* 안읽음 배지 — 살아있는 신호는 버밀리온 */
 .unread-badge {
   flex-shrink: 0;
   display: inline-flex;
@@ -575,20 +952,22 @@ input, select, textarea {
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  border-radius: 999px;
-  background: var(--brand);
-  color: white;
+  border-radius: 2px;
+  background: var(--vermilion);
+  color: var(--fold-white);
+  font-family: var(--font-mono);
   font-size: 10.5px;
   font-weight: 700;
   line-height: 1;
 }
 
-/* 말풍선 옆의 "몇 명이 안 읽었는지" 카카오톡류 힌트 — 배지처럼 채우지 않고 작은 숫자만 */
+/* 말풍선 옆 안읽은 인원 힌트 — 고정폭 숫자만 */
 .unread-count-hint {
   flex-shrink: 0;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
-  color: var(--warn);
+  color: var(--vermilion);
   line-height: 1;
   padding-bottom: 2px;
 }
@@ -602,18 +981,23 @@ table {
 th, td {
   text-align: left;
   padding: 12px 10px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--crease-soft);
 }
 
 th {
-  font-size: 11.5px;
+  font-size: 11px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--ink-faint);
+  letter-spacing: 0.10em;
+  color: var(--ink-fade);
+}
+
+tbody tr {
+  transition: background 120ms var(--ease-out);
 }
 
 tbody tr:hover {
-  background: var(--surface-2);
+  background: rgba(26, 26, 26, 0.04);
 }
 
 /* ---------- 채팅: 방 목록 / 말풍선 ---------- */
@@ -621,16 +1005,13 @@ tbody tr:hover {
 .room-item {
   text-align: left;
   display: block;
-  transition: background 140ms var(--ease-out), border-color 140ms var(--ease-out), transform 120ms var(--ease-out);
-}
-
-.room-item:active {
-  transform: scale(0.985);
+  box-shadow: none;
+  transition: background 140ms var(--ease-out), border-color 140ms var(--ease-out);
 }
 
 .room-item.active {
-  background: var(--brand-soft);
-  border-color: var(--brand-soft);
+  background: var(--sheet-2);
+  border-color: var(--crease);
 }
 
 .chat-bubble-row {
@@ -643,103 +1024,101 @@ tbody tr:hover {
 @keyframes bubble-in {
   from {
     opacity: 0;
-    transform: translateY(6px) scale(0.98);
+    transform: translateY(5px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
 .chat-bubble {
   padding: 9px 13px;
-  border-radius: 16px;
+  border-radius: 3px;
   line-height: 1.45;
   font-size: 14px;
   box-shadow: var(--shadow-sm);
   word-break: break-word;
 }
 
-/* 말풍선 꼬리 방향으로 한쪽 모서리만 살짝 각지게 — 실제 채팅 UI에서 쓰는 비대칭 라운딩 */
+/* 접힌 종이 쪽지 — 한쪽 모서리만 접힌 비대칭 */
 .chat-bubble.theirs {
-  background: var(--surface-2);
+  background: var(--sheet);
+  border: 1px solid var(--crease-soft);
   color: var(--ink);
-  border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 0;
 }
 
 .chat-bubble.mine {
-  background: var(--brand-gradient);
-  color: white;
-  border-bottom-right-radius: 4px;
-  box-shadow: 0 2px 10px rgba(255, 91, 69, 0.22);
+  background-color: var(--vermilion);
+  background-image: url('/assets/vermilion-washi.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
+  color: var(--fold-white);
+  border-bottom-right-radius: 0;
+  box-shadow: 0 2px 8px rgba(169, 51, 32, 0.26);
 }
 
 .chat-input {
   flex: 1;
   padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
+  border: none;
+  border-bottom: 1px solid var(--crease);
+  border-radius: 0;
+  background: transparent;
   color: var(--ink);
   font-size: 14px;
   transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
 }
 
 .chat-input:hover {
-  border-color: #c7cad0;
+  border-bottom-color: var(--ink-fade);
 }
 
 .chat-input:focus {
   outline: none;
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px var(--brand-soft);
+  border-bottom-color: var(--vermilion);
+  box-shadow: 0 1px 0 var(--vermilion);
 }
 
-/* 채팅 위젯 — /chat 전체 페이지와 별개로 어느 화면에서든 아이콘 레일 하단
-   (알림 벨 옆)에서 열어 빠르게 확인/답장할 수 있게 하는 진입점. 트리거는
-   레일 아바타와 같은 원형 아이콘 버튼, 패널은 계정 메뉴/알림과 같은
-   .popover-panel 관용구(스케일+투명도, 트리거 쪽에서 확장되는 origin)를
-   그대로 따른다. */
+/* 채팅 위젯 — 레일 하단 진입점 */
 .rail-chat-trigger {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: none;
-  background: var(--brand-gradient);
-  color: white;
+  border: 1px solid var(--crease);
+  background: var(--sheet);
+  color: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   flex-shrink: 0;
-  transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+  transition: background 160ms var(--ease-out), border-color 160ms var(--ease-out);
 }
 
 .rail-chat-trigger:hover {
-  transform: scale(1.06);
-  box-shadow: var(--shadow-sm);
-}
-
-.rail-chat-trigger:active {
-  transform: scale(0.94);
+  background: var(--fold-white);
+  border-color: var(--ink-fade);
 }
 
 .rail-chat-trigger-badge {
   position: absolute;
-  top: -3px;
-  right: -3px;
+  top: -4px;
+  right: -4px;
   min-width: 16px;
   height: 16px;
-  border-radius: 999px;
-  background: var(--danger);
-  color: white;
+  border-radius: 2px;
+  background: var(--vermilion);
+  color: var(--fold-white);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 3px;
-  border: 2px solid var(--rail-bg);
+  border: 1px solid var(--paper-warm);
 }
 
 .chat-widget-panel {
@@ -757,7 +1136,7 @@ tbody tr:hover {
   align-items: center;
   gap: 8px;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--crease);
   padding-bottom: 10px;
   margin-bottom: 10px;
   flex-shrink: 0;
@@ -783,9 +1162,7 @@ tbody tr:hover {
   gap: 8px;
 }
 
-/* 채팅 알람 토스트 — 위젯이 접혀 있거나 다른 방을 보고 있을 때 새 메시지가
-   오면 화면 상단에 잠깐 떴다가 사라진다. 눌러서 바로 그 방으로 들어갈 수
-   있으니 버튼으로 만들되, 카드 톤은 다른 팝오버들과 맞춘다. */
+/* 채팅 알람 토스트 */
 .chat-toast {
   position: fixed;
   top: 16px;
@@ -804,14 +1181,14 @@ tbody tr:hover {
 }
 
 .chat-toast:active {
-  transform: scale(0.98);
+  transform: translateY(1px);
 }
 
 .chat-toast-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--brand);
+  background: var(--gold);
   flex-shrink: 0;
   margin-top: 5px;
 }
@@ -819,7 +1196,7 @@ tbody tr:hover {
 @keyframes chat-toast-in {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
@@ -837,79 +1214,83 @@ tbody tr:hover {
 }
 
 .notif-item {
-  background: var(--brand-soft);
-  color: var(--brand-ink);
-  border-radius: 10px;
+  background: var(--warn-soft);
+  color: var(--ink-soft);
+  border-left: 2px solid var(--gold);
+  border-radius: 2px;
   padding: 10px 12px;
   font-size: 13px;
   transition: opacity 200ms var(--ease-out);
 }
 
-/* ---------- 게시판 링크 / 테이블 ---------- */
+/* ---------- 게시판 링크 ---------- */
 
 .link-title {
   color: var(--ink);
   font-weight: 600;
-  background-image: linear-gradient(var(--brand), var(--brand));
+  background-image: linear-gradient(var(--vermilion), var(--vermilion));
   background-repeat: no-repeat;
   background-position: 0 100%;
-  background-size: 0% 1.5px;
+  background-size: 0% 1px;
   transition: background-size 180ms var(--ease-out), color 180ms var(--ease-out);
   padding-bottom: 1px;
 }
 
 .link-title:hover {
-  color: var(--brand-dark);
-  background-size: 100% 1.5px;
+  color: var(--vermilion-deep);
+  background-size: 100% 1px;
 }
 
-tbody tr {
-  transition: background 120ms var(--ease-out);
-}
-
-.pill {
-  transition: transform 140ms var(--ease-out);
-}
-
-/* ---------- 로그인 화면 ---------- */
+/* ---------- 로그인 화면 — 책상 위의 한 장 ---------- */
 
 .login-shell {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, #f1f2f5 0%, #fdece7 100%);
+  background-color: var(--paper-warm);
+  background-image: url('/assets/washi-paper.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
 }
 
 .login-card {
   width: 360px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 18px;
+  background-color: var(--sheet);
+  background-image: url('/assets/washi-paper.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--crease-soft);
+  border-radius: 3px;
   padding: 36px 32px;
   box-shadow: var(--shadow-lg);
-  animation: login-in 420ms var(--ease-out) both;
+  animation: fold-in 420ms var(--ease-out) both;
 }
 
-@keyframes login-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.login-mark {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--vermilion);
+  margin-bottom: 16px;
+}
+
+.login-doc-no {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-fade);
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
 }
 
 /* ---------- 확인 모달 ---------- */
-/* window.confirm()은 iframe 임베드/일부 브라우저 정책에서 아예 뜨지 않는 경우가 있어
-   (실측: "나가기 눌러도 확인창이 안 떴다") 네이티브 다이얼로그 대신 앱 내 모달로 대체. */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(20, 22, 25, 0.45);
+  background: rgba(26, 26, 20, 0.42);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -923,8 +1304,12 @@ tbody tr {
 }
 
 .modal {
-  background: var(--surface);
-  border-radius: 16px;
+  background-color: var(--sheet);
+  background-image: url('/assets/washi-paper.webp');
+  background-size: 512px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--crease-soft);
+  border-radius: 3px;
   padding: 22px;
   width: 320px;
   box-shadow: var(--shadow-lg);
@@ -935,7 +1320,7 @@ tbody tr {
 @keyframes modal-in {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
@@ -944,7 +1329,7 @@ tbody tr {
 }
 
 .modal-title {
-  font-weight: 700;
+  font-weight: 800;
   font-size: 15px;
   margin: 0 0 8px;
 }
@@ -960,20 +1345,4 @@ tbody tr {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
-}
-
-.login-mark {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: var(--brand-gradient);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  letter-spacing: -0.02em;
-  font-weight: 800;
-  margin-bottom: 16px;
-  box-shadow: 0 6px 16px rgba(255, 91, 69, 0.28);
 }

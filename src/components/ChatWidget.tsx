@@ -275,7 +275,7 @@ export function ChatWidget() {
               </div>
               <div className="chat-widget-room-list">
                 {rooms.length === 0 && !roomsLoading && (
-                  <p style={{ fontSize: 13, color: 'var(--ink-faint)' }}>채팅방이 없습니다.</p>
+                  <p style={{ fontSize: 13, color: 'var(--ink-fade)' }}>채팅방이 없습니다.</p>
                 )}
                 {rooms.map((room) => (
                   <button key={room.roomId} className="btn room-item" onClick={() => selectRoom(room)}>
@@ -291,7 +291,7 @@ export function ChatWidget() {
                       <div
                         style={{
                           fontSize: 12,
-                          color: 'var(--ink-faint)',
+                          color: 'var(--ink-fade)',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
@@ -305,7 +305,7 @@ export function ChatWidget() {
                     </div>
                   </button>
                 ))}
-                {roomsLoading && <p style={{ fontSize: 12, color: 'var(--ink-faint)', textAlign: 'center' }}>불러오는 중...</p>}
+                {roomsLoading && <p style={{ fontSize: 12, color: 'var(--ink-fade)', textAlign: 'center' }}>불러오는 중...</p>}
               </div>
             </>
           ) : (
@@ -342,7 +342,7 @@ export function ChatWidget() {
                     style={{ alignSelf: m.senderId === user?.id ? 'flex-end' : 'flex-start' }}
                   >
                     {activeRoom.group && m.senderId !== user?.id && (
-                      <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 2 }}>{senderName(m.senderId)}</div>
+                      <div style={{ fontSize: 11, color: 'var(--ink-fade)', marginBottom: 2 }}>{senderName(m.senderId)}</div>
                     )}
                     <div
                       style={{
