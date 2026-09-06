@@ -60,3 +60,13 @@ export function IconBoard({ size = 20 }: IconProps) {
     </svg>
   );
 }
+
+// 관리자 — 접힌 방패(권한/관리 영역을 지키는 형태)
+export function IconAdmin({ size = 20 }: IconProps) {
+  return (
+    <svg {...base(size)} aria-hidden>
+      <path d="M12 3 L19 6 L19 12 C19 16 16 19 12 21 C8 19 5 16 5 12 L5 6 Z" />
+      <path d="M12 3 L12 21 M5 12 L19 12" opacity="0.55" />
+    </svg>
+  );
+}
