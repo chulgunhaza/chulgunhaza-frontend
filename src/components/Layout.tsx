@@ -3,7 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NotificationBell } from './NotificationBell';
 import { ChatWidget } from './ChatWidget';
-import { CraneMark, IconToday, IconLeave, IconBoard } from './icons';
+import { CraneMark, IconToday, IconLeave, IconBoard, IconAdmin } from './icons';
 
 // 채팅은 더 이상 별도 nav 항목이 아니다 — 아이콘 레일 하단의 채팅 위젯(알림
 // 벨 옆)이 진입점이고, 전체 화면이 필요하면 위젯 안의 "전체 화면" 버튼으로
@@ -14,11 +14,17 @@ const NAV_ITEMS = [
   { to: '/board', label: '게시판', end: false, Icon: IconBoard },
 ];
 
+// 근태 관리자(MANAGER)/관리자(ADMIN) 권한이 있을 때만 노출 — 일반 사원 눈에는
+// 아예 안 보인다. 백엔드도 어차피 EmployeeController에서 같은 권한을 요구하므로
+// 이건 UX 정리용이지 실제 접근 통제는 AdminRoute + 백엔드 @PreAuthorize가 한다.
+const ADMIN_NAV_ITEM = { to: '/admin/employees', label: '사원 관리', end: false, Icon: IconAdmin };
+
 const PAGE_TITLE: Record<string, string> = {
   '/': '대시보드',
   '/leave': '연차',
   '/board': '게시판',
   '/chat': '채팅',
+  '/admin/employees': '사원 관리',
 };
 
 export function Layout() {
@@ -30,6 +36,8 @@ export function Layout() {
   const title =
     PAGE_TITLE[location.pathname] ??
     (location.pathname.startsWith('/board') ? '게시판' : '출근하자');
+
+  const isAdmin = user?.employeeRoles.some((role) => role === 'MANAGER' || role === 'ADMIN') ?? false;
 
   const initial = user?.name?.slice(0, 1) ?? '?';
 
@@ -62,6 +70,16 @@ export function Layout() {
               <span>{item.label}</span>
             </NavLink>
           ))}
+          {isAdmin && (
+            <NavLink
+              to={ADMIN_NAV_ITEM.to}
+              end={ADMIN_NAV_ITEM.end}
+              className={({ isActive }) => `rail-item${isActive ? ' active' : ''}`}
+            >
+              <ADMIN_NAV_ITEM.Icon size={20} />
+              <span>{ADMIN_NAV_ITEM.label}</span>
+            </NavLink>
+          )}
         </nav>
         <div className="rail-bottom">
           <NotificationBell />
