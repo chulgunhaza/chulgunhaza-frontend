@@ -19,3 +19,23 @@ export interface AnnualUsageResponseDto {
   useCount: number;
   remainingAnnualCount: number;
 }
+
+// domain/annual/AnnualApprovalStatus — 관리자 백로그 Epic 4
+export type AnnualApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+export const ANNUAL_APPROVAL_STATUS_LABEL: Record<AnnualApprovalStatus, string> = {
+  PENDING: '대기',
+  APPROVED: '승인',
+  REJECTED: '반려',
+};
+
+// AnnualRecordListResponseDto — 관리자 연차 결재 화면에서 쓴다
+export interface AnnualRecordListResponseDto {
+  annualRecordId: number;
+  employeeId: number;
+  employeeName: string;
+  annualDate: string;
+  annualType: AnnualType;
+  annualReason: string | null;
+  annualApprovalStatus: AnnualApprovalStatus;
+}
