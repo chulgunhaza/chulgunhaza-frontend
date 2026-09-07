@@ -21,6 +21,7 @@ export interface PostSearchResponseDto {
   imageList: string[];
   count: number;
   category: Category;
+  pinned: boolean; // 관리자 백로그 Epic 5 — 공지 고정
 }
 
 export interface PostListResponseDto {
@@ -29,4 +30,5 @@ export interface PostListResponseDto {
   author: string | null;
   count: number;
   createdAt: string;
+  pinned: boolean;
 }

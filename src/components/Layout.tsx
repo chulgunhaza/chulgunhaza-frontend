@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useIsAdmin } from '../hooks/useIsAdmin';
 import { NotificationBell } from './NotificationBell';
 import { ChatWidget } from './ChatWidget';
 import { CraneMark, IconToday, IconLeave, IconBoard, IconAdmin, IconAttendance } from './icons';
@@ -41,7 +42,7 @@ export function Layout() {
     PAGE_TITLE[location.pathname] ??
     (location.pathname.startsWith('/board') ? '게시판' : '출근하자');
 
-  const isAdmin = user?.employeeRoles.some((role) => role === 'MANAGER' || role === 'ADMIN') ?? false;
+  const isAdmin = useIsAdmin();
 
   const initial = user?.name?.slice(0, 1) ?? '?';
 
