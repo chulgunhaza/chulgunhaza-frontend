@@ -11,6 +11,8 @@ import { BoardCreatePage } from './pages/BoardCreatePage';
 import { ChatPage } from './pages/ChatPage';
 import { AdminEmployeesPage } from './pages/AdminEmployeesPage';
 import { AdminAttendancePage } from './pages/AdminAttendancePage';
+import { AdminAnnualPage } from './pages/AdminAnnualPage';
+import { AdminStatsPage } from './pages/AdminStatsPage';
 
 export function App() {
   return (
@@ -42,6 +44,22 @@ export function App() {
           element={
             <AdminRoute>
               <AdminAttendancePage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/annual"
+          element={
+            <AdminRoute>
+              <AdminAnnualPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/stats"
+          element={
+            <AdminRoute>
+              <AdminStatsPage />
             </AdminRoute>
           }
         />

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useIsAdmin } from '../hooks/useIsAdmin';
 import { NotificationBell } from './NotificationBell';
 import { ChatWidget } from './ChatWidget';
-import { CraneMark, IconToday, IconLeave, IconBoard, IconAdmin, IconAttendance } from './icons';
+import { CraneMark, IconToday, IconLeave, IconBoard, IconAdmin, IconAttendance, IconApproval, IconStats } from './icons';
 
 // 채팅은 더 이상 별도 nav 항목이 아니다 — 아이콘 레일 하단의 채팅 위젯(알림
 // 벨 옆)이 진입점이고, 전체 화면이 필요하면 위젯 안의 "전체 화면" 버튼으로
@@ -21,6 +21,8 @@ const NAV_ITEMS = [
 const ADMIN_NAV_ITEMS = [
   { to: '/admin/employees', label: '사원 관리', end: false, Icon: IconAdmin },
   { to: '/admin/attendance', label: '근태 관리', end: false, Icon: IconAttendance },
+  { to: '/admin/annual', label: '연차 결재', end: false, Icon: IconApproval },
+  { to: '/admin/stats', label: '통계', end: false, Icon: IconStats },
 ];
 
 const PAGE_TITLE: Record<string, string> = {
@@ -30,6 +32,8 @@ const PAGE_TITLE: Record<string, string> = {
   '/chat': '채팅',
   '/admin/employees': '사원 관리',
   '/admin/attendance': '근태 관리',
+  '/admin/annual': '연차 결재',
+  '/admin/stats': '통계',
 };
 
 export function Layout() {

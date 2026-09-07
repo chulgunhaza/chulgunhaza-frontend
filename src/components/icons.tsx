@@ -80,3 +80,24 @@ export function IconAttendance({ size = 20 }: IconProps) {
     </svg>
   );
 }
+
+// 연차 결재 — 서류 위 도장(승인/반려 판정)
+export function IconApproval({ size = 20 }: IconProps) {
+  return (
+    <svg {...base(size)} aria-hidden>
+      <path d="M6 3 L18 3 L18 21 L6 21 Z" />
+      <path d="M9 8 L15 8 M9 12 L13 12" opacity="0.55" />
+      <circle cx="15" cy="16" r="3.2" />
+    </svg>
+  );
+}
+
+// 대시보드 통계 — 막대그래프
+export function IconStats({ size = 20 }: IconProps) {
+  return (
+    <svg {...base(size)} aria-hidden>
+      <path d="M4 20 L20 20" opacity="0.55" />
+      <path d="M7 20 L7 12 M12 20 L12 6 M17 20 L17 15" />
+    </svg>
+  );
+}
