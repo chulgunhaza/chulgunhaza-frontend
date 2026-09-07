@@ -3,7 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NotificationBell } from './NotificationBell';
 import { ChatWidget } from './ChatWidget';
-import { CraneMark, IconToday, IconLeave, IconBoard, IconAdmin } from './icons';
+import { CraneMark, IconToday, IconLeave, IconBoard, IconAdmin, IconAttendance } from './icons';
 
 // 채팅은 더 이상 별도 nav 항목이 아니다 — 아이콘 레일 하단의 채팅 위젯(알림
 // 벨 옆)이 진입점이고, 전체 화면이 필요하면 위젯 안의 "전체 화면" 버튼으로
@@ -15,9 +15,12 @@ const NAV_ITEMS = [
 ];
 
 // 근태 관리자(MANAGER)/관리자(ADMIN) 권한이 있을 때만 노출 — 일반 사원 눈에는
-// 아예 안 보인다. 백엔드도 어차피 EmployeeController에서 같은 권한을 요구하므로
+// 아예 안 보인다. 백엔드도 어차피 각 컨트롤러에서 같은 권한을 요구하므로
 // 이건 UX 정리용이지 실제 접근 통제는 AdminRoute + 백엔드 @PreAuthorize가 한다.
-const ADMIN_NAV_ITEM = { to: '/admin/employees', label: '사원 관리', end: false, Icon: IconAdmin };
+const ADMIN_NAV_ITEMS = [
+  { to: '/admin/employees', label: '사원 관리', end: false, Icon: IconAdmin },
+  { to: '/admin/attendance', label: '근태 관리', end: false, Icon: IconAttendance },
+];
 
 const PAGE_TITLE: Record<string, string> = {
   '/': '대시보드',
@@ -25,6 +28,7 @@ const PAGE_TITLE: Record<string, string> = {
   '/board': '게시판',
   '/chat': '채팅',
   '/admin/employees': '사원 관리',
+  '/admin/attendance': '근태 관리',
 };
 
 export function Layout() {
@@ -70,16 +74,18 @@ export function Layout() {
               <span>{item.label}</span>
             </NavLink>
           ))}
-          {isAdmin && (
-            <NavLink
-              to={ADMIN_NAV_ITEM.to}
-              end={ADMIN_NAV_ITEM.end}
-              className={({ isActive }) => `rail-item${isActive ? ' active' : ''}`}
-            >
-              <ADMIN_NAV_ITEM.Icon size={20} />
-              <span>{ADMIN_NAV_ITEM.label}</span>
-            </NavLink>
-          )}
+          {isAdmin &&
+            ADMIN_NAV_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) => `rail-item${isActive ? ' active' : ''}`}
+              >
+                <item.Icon size={20} />
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
         </nav>
         <div className="rail-bottom">
           <NotificationBell />

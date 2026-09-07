@@ -10,6 +10,7 @@ import { BoardDetailPage } from './pages/BoardDetailPage';
 import { BoardCreatePage } from './pages/BoardCreatePage';
 import { ChatPage } from './pages/ChatPage';
 import { AdminEmployeesPage } from './pages/AdminEmployeesPage';
+import { AdminAttendancePage } from './pages/AdminAttendancePage';
 
 export function App() {
   return (
@@ -33,6 +34,14 @@ export function App() {
           element={
             <AdminRoute>
               <AdminEmployeesPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/attendance"
+          element={
+            <AdminRoute>
+              <AdminAttendancePage />
             </AdminRoute>
           }
         />
