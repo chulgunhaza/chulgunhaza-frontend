@@ -52,3 +52,9 @@ export async function modifyPost(postNumber: number, dto: PostModifyRequestDto, 
 export async function deletePost(postNumber: number): Promise<void> {
   await apiClient.patch(`/v1/post/delete/${postNumber}`);
 }
+
+// MANAGER 권한 필요. 반환값은 토글 후 상태.
+export async function togglePostPin(postNumber: number): Promise<boolean> {
+  const res = await apiClient.patch<boolean>(`/v1/post/${postNumber}/pin`);
+  return res.data;
+}

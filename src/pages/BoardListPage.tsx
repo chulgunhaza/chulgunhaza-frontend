@@ -75,6 +75,11 @@ export function BoardListPage() {
                 page.contents.map((post) => (
                   <tr key={post.postNumber}>
                     <td>
+                      {post.pinned && (
+                        <span className="pill good" style={{ marginRight: 6, fontSize: 11 }}>
+                          고정
+                        </span>
+                      )}
                       <Link to={`/board/${post.postNumber}`} className="link-title">
                         {post.title}
                       </Link>
