@@ -70,3 +70,13 @@ export function IconAdmin({ size = 20 }: IconProps) {
     </svg>
   );
 }
+
+// 근태 관리 — 시계 위 체크(출근 도장을 찍는 순간)
+export function IconAttendance({ size = 20 }: IconProps) {
+  return (
+    <svg {...base(size)} aria-hidden>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8 L12 12 L15 14" opacity="0.55" />
+    </svg>
+  );
+}

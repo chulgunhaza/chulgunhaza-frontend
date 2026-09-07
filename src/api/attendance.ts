@@ -1,7 +1,7 @@
 import { apiClient } from './client';
-import type { AttendanceCreateRequestDto } from '../types/attendance';
+import type { AttendanceCreateRequestDto, AttendanceListResponseDto } from '../types/attendance';
+import type { PageDto } from '../types/common';
 
-// 백엔드에 "내 출근 기록 조회" API가 없어서(등록용 POST만 존재) 체크인 액션만 제공한다.
 // AttendanceController.registerAttendance는 RabbitMQ에 적재만 하고 즉시 200을 주므로,
 // 실제 저장 성공 여부는 이 응답만으로는 알 수 없다 (비동기 처리).
 export async function registerAttendance(employeeNo: number, checkInTime: Date): Promise<void> {
@@ -10,6 +10,18 @@ export async function registerAttendance(employeeNo: number, checkInTime: Date):
     checkInTime: formatDateTime(checkInTime),
   };
   await apiClient.post('/v1/attendance/register', body);
+}
+
+// GET /v1/attendance — MANAGER 권한 필요. employeeNo를 안 주면 전사 출근 기록.
+export async function getAttendanceList(
+  employeeNo?: number,
+  page = 0,
+  size = 20,
+): Promise<PageDto<AttendanceListResponseDto>> {
+  const res = await apiClient.get<PageDto<AttendanceListResponseDto>>('/v1/attendance', {
+    params: { employeeNo, page, size },
+  });
+  return res.data;
 }
 
 // AttendanceCreateRequestDto.checkInTime의 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")은
