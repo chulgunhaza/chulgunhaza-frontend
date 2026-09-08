@@ -1,7 +1,9 @@
-import { apiClient } from './client';
+import { attendanceApiClient } from './client';
 import type { AttendanceCreateRequestDto, AttendanceListResponseDto } from '../types/attendance';
 import type { PageDto } from '../types/common';
 
+// #100: attendance-server가 물리 분리되면서 :8081이 아니라 :8082로 요청을
+// 보내야 한다 — attendanceApiClient(client.ts)가 그 baseURL을 갖고 있다.
 // AttendanceController.registerAttendance는 RabbitMQ에 적재만 하고 즉시 200을 주므로,
 // 실제 저장 성공 여부는 이 응답만으로는 알 수 없다 (비동기 처리).
 export async function registerAttendance(employeeNo: number, checkInTime: Date): Promise<void> {
@@ -9,7 +11,7 @@ export async function registerAttendance(employeeNo: number, checkInTime: Date):
     employeeNo,
     checkInTime: formatDateTime(checkInTime),
   };
-  await apiClient.post('/v1/attendance/register', body);
+  await attendanceApiClient.post('/v1/attendance/register', body);
 }
 
 // GET /v1/attendance — MANAGER 권한 필요. employeeNo를 안 주면 전사 출근 기록.
@@ -18,7 +20,7 @@ export async function getAttendanceList(
   page = 0,
   size = 20,
 ): Promise<PageDto<AttendanceListResponseDto>> {
-  const res = await apiClient.get<PageDto<AttendanceListResponseDto>>('/v1/attendance', {
+  const res = await attendanceApiClient.get<PageDto<AttendanceListResponseDto>>('/v1/attendance', {
     params: { employeeNo, page, size },
   });
   return res.data;
