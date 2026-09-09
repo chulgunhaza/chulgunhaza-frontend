@@ -29,11 +29,11 @@ export function LoginPage() {
   return (
     <div className="login-shell">
       <form onSubmit={handleSubmit} className="login-card">
-        <div className="login-doc-no">제2026-091호 · 출근 관리 문서</div>
+        <div className="login-doc-no">사내 그룹웨어</div>
         <div className="login-mark"><CraneMark size={40} /></div>
         <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em', marginTop: 0, marginBottom: 4 }}>출근하자</h1>
         <p style={{ fontSize: 13, color: 'var(--ink-fade)', marginTop: 0, marginBottom: 24 }}>
-          오늘의 첫 접기를 시작합니다
+          이메일로 로그인하세요
         </p>
         <div className="field">
           <label>이메일</label>

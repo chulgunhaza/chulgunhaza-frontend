@@ -1,14 +1,14 @@
 /*
-  출근하자 — 오리주루(종이학 접기) 시각 시스템.
-  지면은 와시 종이, 선은 접기 자국(크리스) 헤어라인, 숫자는 고정폭, 현재/라이브는
-  골드 도트, 버밀리온은 '살아있는 접기'(주 액션·현재 시각)에만 예약한다.
-  팔레트 수치는 승인 컴프(.impeccable/mocks/comp-a.webp) 픽셀 실측값.
+  출근하자 — "한 장의 문서" 시각 시스템 (화이트 에디션).
+  흰 지면 위에 눈금선 헤어라인으로 필드를 구분하는 조용한 문서 언어.
+  숫자는 고정폭, 현재 상태는 골드 도트, 주홍은 주 액션 전용 예약색.
+  (구 '아침' 테마의 흰 시트·부드러운 그림자를 참고해 화이트로 전환)
 */
 :root {
-  --paper: #e9e4dc;
-  --paper-warm: #d6cbb8;
-  --sheet: #f2ede3;
-  --sheet-2: #eae3d5;
+  --paper: #ffffff;
+  --paper-warm: #f5f4f0;
+  --sheet: #ffffff;
+  --sheet-2: #f6f5f2;
 
   --vermilion: #d1412b;
   --vermilion-deep: #a93320;
@@ -17,20 +17,20 @@
   --ink-soft: #4d463d;
   --ink-fade: #8e8a83;
 
-  --crease: rgba(26, 26, 26, 0.16);
-  --crease-soft: rgba(26, 26, 26, 0.09);
+  --crease: rgba(26, 26, 26, 0.18);
+  --crease-soft: rgba(26, 26, 26, 0.10);
   --crease-on-vermilion: rgba(246, 241, 233, 0.42);
   --fold-white: #f6f1e9;
 
   --gold: #d0a229;
 
-  /* 상태는 색조가 아니라 기호로 읽히게 하되, 보조 색은 종이 위의 먹처럼 탁하게 */
+  /* 상태는 색조가 아니라 기호로 읽히게 하되, 보조 색은 탁하게 */
   --good: #3f6b4f;
-  --good-soft: #dfe6da;
+  --good-soft: #e6ece7;
   --warn: #8a6b12;
-  --warn-soft: #eee3c4;
+  --warn-soft: #f3ecd8;
   --danger: #a93320;
-  --danger-soft: #efd9d0;
+  --danger-soft: #f2e0da;
 
   --shadow-sm: 0 1px 2px rgba(26, 26, 20, 0.07);
   --shadow-md: 0 3px 10px rgba(26, 26, 20, 0.10);
@@ -50,10 +50,7 @@
 
 html, body {
   margin: 0;
-  background-color: var(--paper);
-  background-image: url('/assets/washi-paper.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
+  background: var(--paper);
 }
 
 body {
@@ -104,7 +101,7 @@ input, select, textarea {
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c3b8a4;
+  background: #d9d7d2;
   border-radius: 0;
 }
 ::-webkit-scrollbar-track {
@@ -122,10 +119,7 @@ input, select, textarea {
 .icon-rail {
   width: 76px;
   flex-shrink: 0;
-  background-color: var(--paper-warm);
-  background-image: url('/assets/washi-paper.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
+  background: var(--paper-warm);
   border-right: 1px solid var(--crease);
   display: flex;
   flex-direction: column;
@@ -277,13 +271,10 @@ input, select, textarea {
 
 /* ---------- 종이 시트 / 버튼 / 폼 ---------- */
 
-/* 카드는 '둥근 패널'이 아니라 한 장의 종이 — 각은 작게, 경계는 크리스 헤어라인 */
+/* 카드는 '둥근 패널'이 아니라 한 장의 문서 — 각은 작게, 경계는 눈금선 헤어라인 */
 .card {
   position: relative;
-  background-color: var(--sheet);
-  background-image: url('/assets/washi-paper.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
+  background: var(--sheet);
   border: 1px solid var(--crease-soft);
   border-radius: 3px;
   padding: 22px;
@@ -352,10 +343,7 @@ input, select, textarea {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--vermilion);
-  background-image: url('/assets/vermilion-washi.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
+  background: var(--vermilion);
   border-color: var(--vermilion-deep);
   color: var(--fold-white);
   box-shadow: 0 2px 6px rgba(169, 51, 32, 0.30);
@@ -483,23 +471,23 @@ input, select, textarea {
   color: var(--vermilion);
 }
 
-/* ---------- 대시보드: 오늘의 접기 ---------- */
+/* ---------- 대시보드: 오늘의 요약 ---------- */
 
-/* 첫 뷰포트: 헤드라인 / 버밀리온 크리스 스퀘어(실시간 시계) / 현재 단계 열 */
+/* 정적인 헤더 영역: 소개(제목·메타·주 액션) + 현재 상태 열 */
 .fold-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr) minmax(220px, 0.7fr);
-  gap: 36px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.7fr);
+  gap: 48px;
   align-items: start;
   animation: fold-in 340ms var(--ease-out) both;
 }
 
 .fold-intro h2 {
-  font-size: 44px;
+  font-size: 36px;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
-  margin: 6px 0 14px;
+  margin: 0 0 14px;
 }
 
 .fold-intro .lede {
@@ -537,90 +525,6 @@ input, select, textarea {
   font-weight: 600;
 }
 
-.fold-square {
-  position: relative;
-  aspect-ratio: 1 / 1;
-  max-width: 380px;
-  justify-self: center;
-  width: 100%;
-  background-color: var(--vermilion);
-  background-image: url('/assets/vermilion-washi.webp');
-  background-size: cover;
-  background-blend-mode: multiply;
-  box-shadow: 0 10px 30px rgba(169, 51, 32, 0.28);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  color: var(--fold-white);
-}
-
-/* 크리스 패턴 — 정사각형 위의 접기 자국. 도형은 코드가 그린다 */
-.fold-square .creases {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.fold-square .fold-clock {
-  position: relative;
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: clamp(40px, 4.6vw, 64px);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1;
-}
-
-.fold-square .fold-clock-label {
-  position: relative;
-  margin-top: 12px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-/* 출근 등록 = 하루의 첫 접기: 스퀘어의 코너가 들리며 완료 스탬프가 찍힌다 */
-.fold-square .fold-corner {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 64px;
-  height: 64px;
-  background: var(--fold-white);
-  clip-path: polygon(100% 0, 0 100%, 100% 100%);
-  box-shadow: -3px -3px 8px rgba(90, 20, 8, 0.25);
-  transition: width 420ms var(--ease-in-out), height 420ms var(--ease-in-out);
-}
-
-.fold-square.folded .fold-corner {
-  width: 120px;
-  height: 120px;
-}
-
-.fold-square .fold-stamp {
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--vermilion);
-  opacity: 0;
-  transform: rotate(-8deg) scale(1.4);
-  transition: opacity 200ms var(--ease-out) 260ms, transform 300ms var(--ease-out) 260ms;
-}
-
-.fold-square.folded .fold-stamp {
-  opacity: 1;
-  transform: rotate(-8deg) scale(1);
-}
-
 .fold-status {
   border-top: 2px solid var(--ink);
   padding-top: 10px;
@@ -638,7 +542,7 @@ input, select, textarea {
   margin-bottom: 4px;
 }
 
-/* 현재 단계 마커 — 골드 도트 */
+/* 현재 상태 마커 — 조용한 골드 도트 */
 .gold-dot {
   display: inline-block;
   width: 7px;
@@ -646,15 +550,6 @@ input, select, textarea {
   border-radius: 50%;
   background: var(--gold);
   flex-shrink: 0;
-}
-
-.gold-dot.live {
-  animation: gold-pulse 2.4s var(--ease-in-out) infinite;
-}
-
-@keyframes gold-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(208, 162, 41, 0.45); }
-  50% { box-shadow: 0 0 0 5px rgba(208, 162, 41, 0); }
 }
 
 .fold-status-row {
@@ -682,120 +577,6 @@ input, select, textarea {
   font-weight: 700;
 }
 
-/* 하루의 단계 스트립 — 번호 매겨진 접기 순서도 */
-.step-strip {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-
-.step-strip-head {
-  grid-column: 1 / -1;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-fade);
-  border-top: 1px solid var(--crease);
-  padding-top: 12px;
-}
-
-.step-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  background-color: var(--sheet);
-  background-image: url('/assets/washi-paper.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
-  border: 1px solid var(--crease-soft);
-  border-radius: 3px;
-  box-shadow: var(--shadow-sm);
-  color: inherit;
-  overflow: hidden;
-  transition: box-shadow 180ms var(--ease-out), transform 180ms var(--ease-out);
-}
-
-.step-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-/* 호버 시 코너가 접히듯 들린다 — 종이 조각의 물성 */
-.step-card::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 0;
-  height: 0;
-  background: var(--sheet-2);
-  clip-path: polygon(100% 0, 0 100%, 100% 100%);
-  box-shadow: -2px -2px 5px rgba(26, 26, 20, 0.12);
-  transition: width 240ms var(--ease-out), height 240ms var(--ease-out);
-}
-
-.step-card:hover::after {
-  width: 26px;
-  height: 26px;
-}
-
-.step-card .step-head {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.step-card .step-no {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--ink-fade);
-}
-
-.step-card .step-name {
-  font-size: 13.5px;
-  font-weight: 700;
-}
-
-.step-card .fold-diagram {
-  width: 100%;
-  height: auto;
-  color: var(--ink-fade);
-}
-
-/* 현재 단계 카드는 버밀리온 — 지금 접고 있는 한 장 */
-.step-card.current {
-  background-color: var(--vermilion);
-  background-image: url('/assets/vermilion-washi.webp');
-  background-blend-mode: multiply;
-  background-size: 512px;
-  border-color: var(--vermilion-deep);
-  color: var(--fold-white);
-  cursor: default;
-}
-
-.step-card.current:hover {
-  transform: none;
-}
-
-.step-card.current .step-no,
-.step-card.current .fold-diagram {
-  color: rgba(246, 241, 233, 0.75);
-}
-
-.step-card.current .step-head::after {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--gold);
-  margin-left: auto;
-  align-self: center;
-}
-
 /* ---------- 대시보드 하단 요약 그리드 ---------- */
 
 .dashboard-grid {
@@ -817,21 +598,11 @@ input, select, textarea {
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  .fold-square {
-    max-width: 320px;
-    justify-self: start;
-  }
-  .step-strip {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (max-width: 560px) {
-  .step-strip {
-    grid-template-columns: 1fr 1fr;
-  }
   .fold-intro h2 {
-    font-size: 32px;
+    font-size: 30px;
   }
 }
 
@@ -1050,10 +821,7 @@ tbody tr:hover {
 }
 
 .chat-bubble.mine {
-  background-color: var(--vermilion);
-  background-image: url('/assets/vermilion-washi.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
+  background: var(--vermilion);
   color: var(--fold-white);
   border-bottom-right-radius: 0;
   box-shadow: 0 2px 8px rgba(169, 51, 32, 0.26);
@@ -1241,25 +1009,19 @@ tbody tr:hover {
   background-size: 100% 1px;
 }
 
-/* ---------- 로그인 화면 — 책상 위의 한 장 ---------- */
+/* ---------- 로그인 화면 — 흰 책상 위의 한 장 ---------- */
 
 .login-shell {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--paper-warm);
-  background-image: url('/assets/washi-paper.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
+  background: var(--paper-warm);
 }
 
 .login-card {
   width: 360px;
-  background-color: var(--sheet);
-  background-image: url('/assets/washi-paper.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
+  background: var(--sheet);
   border: 1px solid var(--crease-soft);
   border-radius: 3px;
   padding: 36px 32px;
@@ -1304,10 +1066,7 @@ tbody tr:hover {
 }
 
 .modal {
-  background-color: var(--sheet);
-  background-image: url('/assets/washi-paper.webp');
-  background-size: 512px;
-  background-blend-mode: multiply;
+  background: var(--sheet);
   border: 1px solid var(--crease-soft);
   border-radius: 3px;
   padding: 22px;
