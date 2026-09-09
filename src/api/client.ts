@@ -3,8 +3,14 @@ import axios, { type AxiosError, type AxiosInstance, type InternalAxiosRequestCo
 // #98: 세션 쿠키(JSESSIONID) → JWT(access_token/refresh_token httpOnly 쿠키) 전환.
 // 둘 다 httpOnly 쿠키라 여전히 withCredentials가 필수다 — 백엔드
 // JwtAuthenticationFilter가 access_token 쿠키를 못 찾으면 401을 준다.
+//
+// k8s 배포용: baseURL을 빌드 타임 환경변수(VITE_*)로 뺐다 — 로컬 npm run dev는
+// 지금까지와 동일하게 기본값(localhost:808X)을 쓰고, VM의 kubeadm 클러스터에
+// NodePort로 배포할 때만 컨테이너 빌드 시점에 VM IP를 주입한다(포트포워딩 없이
+// VM IP로 직접 접근하기로 했으므로 정적 빌드에 굽는 방식 — Vite는 런타임 설정
+// 주입이 안 됨). 기본값은 절대 안 바뀌므로 기존 로컬 개발 워크플로에는 영향 없음.
 export const apiClient = axios.create({
-  baseURL: 'http://localhost:8081',
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081',
   withCredentials: true,
 });
 
@@ -15,7 +21,7 @@ export const apiClient = axios.create({
 // attendance-server(:8082) 요청에도 그대로 실린다 — CORS만 attendance-server
 // 쪽에서 허용해주면 된다(이미 같은 cors.allowed-origins 계약).
 export const attendanceApiClient = axios.create({
-  baseURL: 'http://localhost:8082',
+  baseURL: import.meta.env.VITE_ATTENDANCE_API_BASE_URL ?? 'http://localhost:8082',
   withCredentials: true,
 });
 
@@ -24,7 +30,7 @@ export const attendanceApiClient = axios.create({
 // 호스트 기준 스코프라 포트가 달라도 그대로 실린다, CORS만 chatting-server
 // 쪽에서 허용).
 export const chattingApiClient = axios.create({
-  baseURL: 'http://localhost:8083',
+  baseURL: import.meta.env.VITE_CHATTING_API_BASE_URL ?? 'http://localhost:8083',
   withCredentials: true,
 });
 

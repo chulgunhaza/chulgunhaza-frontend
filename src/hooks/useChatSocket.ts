@@ -2,7 +2,9 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import type { ChatMessageListResponseDto } from '../types/chat';
 
 // #101: chatting-server 물리 분리로 WebSocket 핸드셰이크도 :8083으로 옮겨간다.
-const WS_URL = 'ws://localhost:8083/websocket';
+// k8s 배포용: client.ts와 동일한 이유로 빌드 타임 환경변수로 오버라이드 가능
+// (기본값은 로컬 개발과 동일하게 유지).
+const WS_URL = import.meta.env.VITE_WS_URL ?? 'ws://localhost:8083/websocket';
 const RECONNECT_BASE_DELAY_MS = 1000;
 const RECONNECT_MAX_DELAY_MS = 10000;
 
