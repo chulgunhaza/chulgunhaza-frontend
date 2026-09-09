@@ -11,17 +11,9 @@ import type { PostListResponseDto } from '../types/post';
 import { toApiError } from '../api/client';
 import { useChatUnreadCount } from '../hooks/useChatUnreadCount';
 import { Stat } from '../components/Stat';
-import { FoldDiagram } from '../components/FoldDiagram';
 
 const BOARD_PREVIEW_CATEGORY = '공지';
 const PREVIEW_SIZE = 5;
-
-const STEPS = [
-  { no: '01', name: '오늘', to: '/', current: true },
-  { no: '02', name: '연차', to: '/leave', current: false },
-  { no: '03', name: '게시판', to: '/board', current: false },
-  { no: '04', name: '채팅', to: '/chat', current: false },
-];
 
 // INFO : 메인 페이지(대시보드) — 매일 켜서 한눈에 확인하는 용도라, 각 기능의
 // 요약만 보여주고 실제 조작(연차 신청, 채팅 답장, 글쓰기)은 각자의 전용
@@ -44,13 +36,6 @@ export function DashboardPage() {
 
   const [recentRooms, setRecentRooms] = useState<ChatRoomListResponseDto[]>([]);
   const [chatError, setChatError] = useState<string | null>(null);
-
-  // 크리스 스퀘어의 실시간 시계 — "실시간이 곧 신뢰"를 첫 화면에서 보여주는 장치
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -86,16 +71,15 @@ export function DashboardPage() {
     }
   }
 
-  const clock = now.toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit' });
-  const todayMono = now.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
-  const todayWeekday = now.toLocaleDateString('ko-KR', { weekday: 'short' });
+  const todayMono = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  const todayWeekday = new Date().toLocaleDateString('ko-KR', { weekday: 'short' });
 
   return (
     <>
       <section className="fold-hero">
         <div className="fold-intro">
           <h2>오늘의 출근</h2>
-          <p className="lede">좋은 하루의 시작은 작은 접기에서부터. 오늘의 첫 번째 접기를 완료하세요.</p>
+          <p className="lede">출근 등록과 오늘의 요약을 한눈에 확인하세요.</p>
           <div className="fold-meta">
             <div className="fold-meta-row">
               <span className="k">출근 시간</span>
@@ -116,11 +100,11 @@ export function DashboardPage() {
           </div>
           {checkInStatus === 'sent' ? (
             <p style={{ fontSize: 13.5, color: 'var(--good)', fontWeight: 700, margin: '0 0 6px' }}>
-              첫 접기 완료 — 출근이 등록되었습니다.
+              출근이 등록되었습니다.
             </p>
           ) : (
             <button className="btn btn-primary" onClick={handleCheckIn} disabled={checkInStatus === 'sending'}>
-              {checkInStatus === 'sending' ? '접는 중...' : '지금 출근 등록'}
+              {checkInStatus === 'sending' ? '등록 중...' : '지금 출근 등록'}
             </button>
           )}
           {checkInStatus === 'error' && <p className="error-text" style={{ marginTop: 6, marginBottom: 0 }}>{checkInError}</p>}
@@ -130,26 +114,10 @@ export function DashboardPage() {
           </p>
         </div>
 
-        <div className={`fold-square${checkInStatus === 'sent' ? ' folded' : ''}`}>
-          <svg className="creases" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
-            <g stroke="rgba(246, 241, 233, 0.42)" strokeWidth="0.5" fill="none">
-              <path d="M0 0 L100 100 M100 0 L0 100" />
-              <path d="M50 0 L50 100 M0 50 L100 50" strokeDasharray="2.5 2.5" opacity="0.7" />
-              <path d="M0 25 L50 50 L0 75 M100 25 L50 50 L100 75" opacity="0.55" />
-            </g>
-          </svg>
-          <div className="fold-clock">{clock}</div>
-          <div className="fold-clock-label">
-            {checkInStatus === 'sent' ? 'Fold 01 · 완료' : 'Fold 01 · 출근'}
-          </div>
-          <div className="fold-corner" />
-          <div className="fold-stamp">등록 완료</div>
-        </div>
-
         <aside className="fold-status">
           <div className="fold-status-head">
-            <span className="gold-dot live" />
-            현재 단계
+            <span className="gold-dot" />
+            현재 상태
           </div>
           <div className="fold-status-row">
             <span className="k">출근</span>
@@ -169,29 +137,6 @@ export function DashboardPage() {
           </div>
         </aside>
       </section>
-
-      <nav className="step-strip" aria-label="하루의 단계">
-        <div className="step-strip-head">하루의 네 단계</div>
-        {STEPS.map((step, i) =>
-          step.current ? (
-            <div key={step.no} className="step-card current" aria-current="page">
-              <div className="step-head">
-                <span className="step-no">{step.no}</span>
-                <span className="step-name">{step.name}</span>
-              </div>
-              <FoldDiagram variant={i} />
-            </div>
-          ) : (
-            <Link key={step.no} to={step.to} className="step-card">
-              <div className="step-head">
-                <span className="step-no">{step.no}</span>
-                <span className="step-name">{step.name}</span>
-              </div>
-              <FoldDiagram variant={i} />
-            </Link>
-          ),
-        )}
-      </nav>
 
       <div className="dashboard-grid">
         <div className="card">

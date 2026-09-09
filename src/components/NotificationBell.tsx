@@ -30,9 +30,10 @@ export function NotificationBell() {
               right: 10,
               minWidth: 16,
               height: 16,
-              borderRadius: 999,
-              background: 'var(--danger)',
-              color: 'white',
+              borderRadius: 2,
+              background: 'var(--vermilion)',
+              color: 'var(--fold-white)',
+              fontFamily: 'var(--font-mono)',
               fontSize: 10,
               fontWeight: 700,
               display: 'flex',
@@ -74,7 +75,7 @@ export function NotificationBell() {
           </div>
           <div style={{ overflowY: 'auto' }}>
             {notifications.length === 0 ? (
-              <p style={{ fontSize: 13, color: 'var(--ink-faint)', margin: 0 }}>아직 받은 알림이 없습니다.</p>
+                          <p style={{ fontSize: 13, color: 'var(--ink-fade)', margin: 0 }}>아직 받은 알림이 없습니다.</p>
             ) : (
               <ul className="notif-list">
                 {notifications.map((n) => (
@@ -86,7 +87,7 @@ export function NotificationBell() {
                             width: 6,
                             height: 6,
                             borderRadius: 999,
-                            background: 'var(--danger)',
+                            background: 'var(--gold)',
                             marginTop: 5,
                             flexShrink: 0,
                           }}

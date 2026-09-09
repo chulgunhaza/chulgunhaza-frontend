@@ -296,7 +296,7 @@ export function ChatPage() {
           onScroll={handleRoomsScroll}
         >
           {rooms.length === 0 && !roomsLoading && (
-            <p style={{ fontSize: 13, color: 'var(--ink-faint)' }}>채팅방이 없습니다.</p>
+            <p style={{ fontSize: 13, color: 'var(--ink-fade)' }}>채팅방이 없습니다.</p>
           )}
           {rooms.map((room) => (
             <button
@@ -313,14 +313,14 @@ export function ChatPage() {
                 )}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
-                <div style={{ fontSize: 12, color: 'var(--ink-faint)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: 12, color: 'var(--ink-fade)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {room.lastMessage ?? '대화를 시작해보세요'}
                 </div>
                 {room.unReadMessageCount > 0 && <span className="unread-badge">{room.unReadMessageCount > 99 ? '99+' : room.unReadMessageCount}</span>}
               </div>
             </button>
           ))}
-          {roomsLoading && <p style={{ fontSize: 12, color: 'var(--ink-faint)', textAlign: 'center' }}>불러오는 중...</p>}
+          {roomsLoading && <p style={{ fontSize: 12, color: 'var(--ink-fade)', textAlign: 'center' }}>불러오는 중...</p>}
         </div>
 
         {pickerOpen && (
@@ -339,7 +339,7 @@ export function ChatPage() {
             }}
           >
             <p style={{ fontSize: 12.5, marginTop: 0, marginBottom: 4 }}>
-              대화 상대 선택 <span style={{ color: 'var(--ink-faint)' }}>(여러 명 선택 시 단체 채팅)</span>
+              대화 상대 선택 <span style={{ color: 'var(--ink-fade)' }}>(여러 명 선택 시 단체 채팅)</span>
             </p>
             {employees.map((e) => (
               <label
@@ -374,10 +374,10 @@ export function ChatPage() {
 
       <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {!activeRoom ? (
-          <p style={{ color: 'var(--ink-faint)' }}>왼쪽에서 채팅방을 선택하세요.</p>
+          <p style={{ color: 'var(--ink-fade)' }}>왼쪽에서 채팅방을 선택하세요.</p>
         ) : (
           <>
-            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: 10, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ borderBottom: '1px solid var(--crease)', paddingBottom: 10, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <b>{activeRoom.roomName}</b>
                 <span
@@ -395,12 +395,12 @@ export function ChatPage() {
               style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}
             >
               {messagesLoading && messagesPage > 0 && (
-                <p style={{ fontSize: 12, color: 'var(--ink-faint)', textAlign: 'center', margin: '4px 0' }}>
+                <p style={{ fontSize: 12, color: 'var(--ink-fade)', textAlign: 'center', margin: '4px 0' }}>
                   이전 메시지 불러오는 중...
                 </p>
               )}
               {!messagesHasMore && messages.length > 0 && (
-                <p style={{ fontSize: 11.5, color: 'var(--ink-faint)', textAlign: 'center', margin: '4px 0' }}>
+                <p style={{ fontSize: 11.5, color: 'var(--ink-fade)', textAlign: 'center', margin: '4px 0' }}>
                   대화의 처음입니다
                 </p>
               )}
@@ -411,7 +411,7 @@ export function ChatPage() {
                   style={{ alignSelf: m.senderId === user?.id ? 'flex-end' : 'flex-start' }}
                 >
                   {activeRoom.group && m.senderId !== user?.id && (
-                    <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 2 }}>{senderName(m.senderId)}</div>
+                    <div style={{ fontSize: 11, color: 'var(--ink-fade)', marginBottom: 2 }}>{senderName(m.senderId)}</div>
                   )}
                   <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flexDirection: m.senderId === user?.id ? 'row' : 'row-reverse' }}>
                     {/* 내가 보낸 메시지에만 "아직 안 읽은 사람 수"를 표시한다 (카카오톡처럼) —
