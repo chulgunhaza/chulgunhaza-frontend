@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type { ChatMessageListResponseDto } from '../types/chat';
 
-const WS_URL = 'ws://localhost:8081/websocket';
+// #101: chatting-server 물리 분리로 WebSocket 핸드셰이크도 :8083으로 옮겨간다.
+const WS_URL = 'ws://localhost:8083/websocket';
 const RECONNECT_BASE_DELAY_MS = 1000;
 const RECONNECT_MAX_DELAY_MS = 10000;
 
