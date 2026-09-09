@@ -1,4 +1,4 @@
-import { apiClient } from './client';
+import { chattingApiClient } from './client';
 import type {
   ChatRoomCreateRequestDto,
   ChatRoomListResponseDto,
@@ -8,12 +8,12 @@ import type {
 import type { PageDto } from '../types/common';
 
 export async function createChatRoom(dto: ChatRoomCreateRequestDto): Promise<number> {
-  const res = await apiClient.post<number>('/v1/chat/create', dto);
+  const res = await chattingApiClient.post<number>('/v1/chat/create', dto);
   return res.data;
 }
 
 export async function getChatRooms(page = 0, size = 20): Promise<PageDto<ChatRoomListResponseDto>> {
-  const res = await apiClient.get<PageDto<ChatRoomListResponseDto>>('/v1/chat/find/rooms', {
+  const res = await chattingApiClient.get<PageDto<ChatRoomListResponseDto>>('/v1/chat/find/rooms', {
     params: { page, size },
   });
   return res.data;
@@ -24,7 +24,7 @@ export async function getChatMessages(
   page = 0,
   size = 30,
 ): Promise<PageDto<ChatMessageListResponseDto>> {
-  const res = await apiClient.get<PageDto<ChatMessageListResponseDto>>(`/v1/chat/find/${roomId}`, {
+  const res = await chattingApiClient.get<PageDto<ChatMessageListResponseDto>>(`/v1/chat/find/${roomId}`, {
     params: { page, size },
   });
   return res.data;
@@ -40,12 +40,12 @@ export async function sendChatMessage(roomId: number, message: string): Promise<
     message,
     createTime: toLocalDateTimeString(new Date()),
   };
-  await apiClient.post('/v1/chat/send', dto);
+  await chattingApiClient.post('/v1/chat/send', dto);
 }
 
 // 채팅방 나가기 — 내 참여 기록만 삭제된다 (남은 참여자는 계속 대화 가능).
 export async function leaveChatRoom(roomId: number): Promise<void> {
-  await apiClient.delete(`/v1/chat/${roomId}/leave`);
+  await chattingApiClient.delete(`/v1/chat/${roomId}/leave`);
 }
 
 function toLocalDateTimeString(date: Date): string {

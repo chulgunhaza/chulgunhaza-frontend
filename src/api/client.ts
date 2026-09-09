@@ -19,6 +19,15 @@ export const attendanceApiClient = axios.create({
   withCredentials: true,
 });
 
+// #101: chatting-server가 별도 프로세스(:8083)로 분리되면서 채팅 API만 다른
+// baseURL을 써야 한다 — attendanceApiClient(#100)와 완전히 같은 이유(쿠키는
+// 호스트 기준 스코프라 포트가 달라도 그대로 실린다, CORS만 chatting-server
+// 쪽에서 허용).
+export const chattingApiClient = axios.create({
+  baseURL: 'http://localhost:8083',
+  withCredentials: true,
+});
+
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
@@ -87,6 +96,7 @@ function attachRefreshInterceptor(instance: AxiosInstance): void {
 
 attachRefreshInterceptor(apiClient);
 attachRefreshInterceptor(attendanceApiClient);
+attachRefreshInterceptor(chattingApiClient);
 
 export interface ApiError {
   status: number;
