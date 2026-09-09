@@ -5,7 +5,7 @@
 # src/api/client.ts / useChatSocket.ts의 localhost 기본값이 그대로 굳는다.
 # vm-deploy.sh는 포트포워딩 없이 VM IP로 직접 접근하는 배포이므로 이 값들을
 # 반드시 VM IP 기준으로 채워서 빌드한다.
-FROM node:20-alpine AS build
+FROM docker.io/library/node:20-alpine AS build
 WORKDIR /app
 
 ARG VITE_API_BASE_URL
@@ -23,7 +23,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine
+FROM docker.io/library/nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
